@@ -1,0 +1,3 @@
+# This file was created by Wireshark. Edit with care.
+@FujitsuAir Comment@frame.comment@[51143,38807,65535][4626,10023,11822]
+@FujitsuAir Duplicate@fujitsuair.duplicate@[65535,65535,65535][47802,48573,46774]
