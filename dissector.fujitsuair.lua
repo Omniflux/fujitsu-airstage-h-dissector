@@ -72,7 +72,7 @@ local f_swing            = ProtoField.bool  ("fujitsuair.swing"                 
 local f_sstep            = ProtoField.bool  ("fujitsuair.swingstep"             , "Swing Step"         ,        8, nil , 0x02) -- STATUS -- not confirmed (change to next position (position not reported, always 0 from indoor unit))
 local f_unk9             = ProtoField.bool  ("fujitsuair.unknown9"              , "Unknown"            ,        8, nil , 0x01) -- STATUS
 local f_funcval          = ProtoField.uint8 ("fujitsuair.function_value"        , "Function Value"     , base.DEC, nil , 0xFF) -- FUNCTION
-local f_unk16            = ProtoField.bool  ("fujitsuair.unknown16"             , "Unknown"            ,        8, nil , 0x80) -- HELLO
+local f_f_filter_maint   = ProtoField.bool  ("fujitsuair.feature.filter_maint"  , "Filter Maintenance" ,        8, nil , 0x80) -- HELLO
 local f_f_remote_sensor  = ProtoField.bool  ("fujitsuair.feature.remote_sensor" , "Remote Sensor"      ,        8, nil , 0x40) -- HELLO
 local f_unk17            = ProtoField.uint8 ("fujitsuair.unknown17"             , "Unknown"            , base.DEC, nil , 0x3F) -- HELLO
 -- byte 6
@@ -94,7 +94,7 @@ p_fujitsuair.fields = {
     f_unk4, f_error, f_fan, f_mode, f_enabled, f_unk13,                   -- byte 3
     f_unk5, f_unk6, f_errcode, f_eco, f_testrun, f_temp, f_function,      -- byte 4
     f_unk7, f_remote_sensor, f_unk8, f_swing, f_sstep, f_unk9, f_funcval, -- byte 5
-    f_unk16, f_f_remote_sensor, f_unk17,                                  -- byte 5
+    f_f_filter_maint, f_f_remote_sensor, f_unk17,                         -- byte 5
     f_unk10, f_unk11, f_remote_temp, f_remote_connected, f_unk14,         -- byte 6
     f_unk12, f_unk15, f_indoorunit                                        -- byte 7
 }
@@ -210,13 +210,15 @@ function p_fujitsuair.dissector(buf, pinfo, tree)
 
         used = used + 2
     elseif ptype == 2 then -- HELLO -- unknown fields are probably indoor unit informing remote what is supported (for example swing mode)
+        local featuretree = subtree:add("", "Supported Features")
+
         -- byte 3                   -- need to emulate indoor unit and see how remote reacts to different bits flipped...
         subtree:add(f_unk4            , buf(3,1))
         -- byte 4
         subtree:add(f_unk5            , buf(4,1))
         -- byte 5
-        subtree:add(f_unk16           , buf(5,1))
-        subtree:add(f_f_remote_sensor , buf(5,1))
+        featuretree:add(f_f_filter_maint  , buf(5,1))
+        featuretree:add(f_f_remote_sensor , buf(5,1))
         subtree:add(f_unk17           , buf(5,1))
         -- byte 6
         subtree:add(f_unk10           , buf(6,1))
