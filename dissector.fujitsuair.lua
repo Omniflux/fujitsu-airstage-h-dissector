@@ -82,9 +82,9 @@ local f_unk10                = ProtoField.uint8 ("fujitsuair.unknown10"         
 local f_unk19                = ProtoField.uint8 ("fujitsuair.unknown19"                 , "Unknown"                , base.DEC, nil, 0xFC) -- IU STATUS
 local f_seen_secondary_rc    = ProtoField.bool  ("fujitsuair.seen_secondary_rc"         , "Seen Secondary RC"      ,        8, nil, 0x02) -- IU STATUS
 local f_seen_primary_rc      = ProtoField.bool  ("fujitsuair.seen_primary_rc"           , "Seen Primary RC"        ,        8, nil, 0x01) -- IU STATUS
-local f_unk11                = ProtoField.uint8 ("fujitsuair.unknown11"                 , "Unknown"                , base.DEC, nil, 0xC0) -- RC STATUS -- more bits for temperature?
-local f_controller_temp      = ProtoField.uint8 ("fujitsuair.controller_temp"           , "Controller Temperature" , base.DEC, nil, 0x3E) -- RC STATUS -- need to increase controller temp above 31C (88F) to check 1 bit, 63C (145F) to check 2 bits
-local f_unk20                = ProtoField.uint8 ("fujitsuair.unknown20"                 , "Unknown"                , base.DEC, nil, 0x01) -- RC STATUS
+local f_unk11                = ProtoField.uint8 ("fujitsuair.unknown11"                 , "Unknown"                , base.DEC, nil, 0x80) -- RC STATUS -- more bits for temperature?
+local f_controller_temp      = ProtoField.uint8 ("fujitsuair.controller_temp"           , "Controller Temperature" , base.DEC, nil, 0x7E) -- RC STATUS -- need to increase controller temp above 63C (145F) to check
+local f_unk20                = ProtoField.uint8 ("fujitsuair.unknown20"                 , "Unknown"                , base.DEC, nil, 0x01) -- RC STATUS -- 0.5 degrees C?
 local f_unk14                = ProtoField.uint8 ("fujitsuair.unknown14"                 , "Unknown"                , base.DEC, nil, 0xFF) -- FUNCTION
 -- byte 7
 local f_unk12                = ProtoField.uint8 ("fujitsuair.unknown12"  , "Unknown"     , base.DEC, nil, 0xFF) -- STATUS, IU HELLO
