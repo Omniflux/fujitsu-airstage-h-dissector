@@ -51,41 +51,45 @@ local f_type                 = ProtoField.uint8 ("fujitsuair.type"      , "Type"
 local f_write                = ProtoField.bool  ("fujitsuair.write"     , "Write"        ,        8, nil        , 0x08) -- ALL -- from indoor unit might mean turn on defrost/standby symbol on controller
 local f_unk3                 = ProtoField.uint8 ("fujitsuair.unknown3"  , "Unknown"      , base.DEC, nil        , 0x07) -- ALL
 -- byte 3
-local f_unk4                 = ProtoField.uint8 ("fujitsuair.unknown4"  , "Unknown"      , base.DEC, nil        , 0xFF) -- ERROR, HELLO
+local f_unk4                 = ProtoField.uint8 ("fujitsuair.unknown4"  , "Unknown"      , base.DEC, nil        , 0xFF) -- ERROR, IU HELLO
 local f_error                = ProtoField.bool  ("fujitsuair.error"     , "Error"        ,        8, nil        , 0x80) -- STATUS
 local f_fan                  = ProtoField.uint8 ("fujitsuair.fan"       , "Fan"          , base.DEC, fanlevel   , 0x70) -- STATUS
 local f_mode                 = ProtoField.uint8 ("fujitsuair.mode"      , "Mode"         , base.DEC, opmode     , 0x0E) -- STATUS
 local f_enabled              = ProtoField.bool  ("fujitsuair.enabled"   , "Enabled"      ,        8, nil        , 0x01) -- STATUS
 local f_unk13                = ProtoField.uint8 ("fujitsuair.unknown13" , "Unknown"      , base.DEC, nil        , 0xFF) -- FUNCTION
 -- byte 4
-local f_unk5                 = ProtoField.uint8 ("fujitsuair.unknown5"  , "Unknown"      , base.DEC, nil        , 0xFF) -- HELLO
-local f_errcode              = ProtoField.uint8 ("fujitsuair.errcode"   , "Error Code"   , base.HEX)                    -- ERROR
-local f_eco                  = ProtoField.bool  ("fujitsuair.eco"       , "Economy Mode" ,        8, nil        , 0x80) -- STATUS
-local f_testrun              = ProtoField.bool  ("fujitsuair.testrun"   , "Test Run"     ,        8, nil        , 0x40) -- STATUS
-local f_unk6                 = ProtoField.uint8 ("fujitsuair.unknown6"  , "Unknown"      , base.DEC, nil        , 0x20) -- STATUS -- more bits for temperature?
-local f_temp                 = ProtoField.uint8 ("fujitsuair.temp"      , "Temperature"  , base.DEC, nil        , 0x1F) -- STATUS -- celcius 16C (0x10) - 30C (0x1E) valid?
-local f_function             = ProtoField.uint8 ("fujitsuair.function"  , "Function"     , base.DEC, nil        , 0xFF) -- FUNCTION -- maybe 7 bits? function #99 (0x63) appears to be maximum
+local f_unk5                 = ProtoField.uint8 ("fujitsuair.unknown5"                  , "Unknown"                , base.DEC, nil , 0xFF) -- IU HELLO
+local f_errcode              = ProtoField.uint8 ("fujitsuair.errcode"                   , "Error Code"             , base.HEX)             -- ERROR
+local f_eco                  = ProtoField.bool  ("fujitsuair.eco"                       , "Economy Mode"           ,        8, nil , 0x80) -- STATUS
+local f_testrun              = ProtoField.bool  ("fujitsuair.testrun"                   , "Test Run"               ,        8, nil , 0x40) -- STATUS
+local f_unk6                 = ProtoField.uint8 ("fujitsuair.unknown6"                  , "Unknown"                , base.DEC, nil , 0x20) -- STATUS -- more bits for temperature?
+local f_temp                 = ProtoField.uint8 ("fujitsuair.temperature_setpoint"      , "Temperature Setpoint"   , base.DEC, nil , 0x1F) -- STATUS -- celcius 16C (0x10) - 30C (0x1E) valid?
+local f_function             = ProtoField.uint8 ("fujitsuair.function"                  , "Function"               , base.DEC, nil , 0xFF) -- FUNCTION -- maybe 7 bits? function #99 (0x63) appears to be maximum
 -- byte 5
-local f_unk7                 = ProtoField.uint8 ("fujitsuair.unknown7"                  , "Unknown"                , base.DEC, nil , 0xFF) -- ERROR
-local f_controller_sensor    = ProtoField.bool  ("fujitsuair.controller_sensor"         , "Use Controller Sensor"  ,        8, nil , 0x80) -- STATUS
-local f_unk8                 = ProtoField.uint8 ("fujitsuair.unknown8"                  , "Unknown"                , base.DEC, nil , 0x78) -- STATUS
-local f_swing                = ProtoField.bool  ("fujitsuair.swing"                     , "Swing"                  ,        8, nil , 0x04) -- STATUS -- not confirmed (enable/disable)
-local f_sstep                = ProtoField.bool  ("fujitsuair.swingstep"                 , "Swing Step"             ,        8, nil , 0x02) -- STATUS -- not confirmed (change to next position (position not reported, always 0 from indoor unit))
-local f_unk9                 = ProtoField.bool  ("fujitsuair.unknown9"                  , "Unknown"                ,        8, nil , 0x01) -- STATUS
+local f_unk7                 = ProtoField.uint8 ("fujitsuair.unknown7"                  , "Unknown"                , base.DEC, nil , 0xFF) -- IU STATUS
+local f_controller_sensor    = ProtoField.bool  ("fujitsuair.controller_sensor"         , "Use Controller Sensor"  ,        8, nil , 0x80) -- RC STATUS
+local f_unk8                 = ProtoField.uint8 ("fujitsuair.unknown8"                  , "Unknown"                , base.DEC, nil , 0x78) -- RC STATUS
+local f_swing                = ProtoField.bool  ("fujitsuair.swing"                     , "Swing"                  ,        8, nil , 0x04) -- RC STATUS -- not confirmed (enable/disable)
+local f_sstep                = ProtoField.bool  ("fujitsuair.swingstep"                 , "Swing Step"             ,        8, nil , 0x02) -- RC STATUS -- not confirmed (change to next position (position not reported, always 0 from indoor unit))
+local f_unk9                 = ProtoField.uint8 ("fujitsuair.unknown9"                  , "Unknown"                , base.DEC, nil , 0x01) -- RC STATUS
 local f_funcval              = ProtoField.uint8 ("fujitsuair.function_value"            , "Function Value"         , base.DEC, nil , 0xFF) -- FUNCTION
-local f_f_filter_maint       = ProtoField.bool  ("fujitsuair.feature.filter_maint"      , "Filter Maintenance"     ,        8, nil , 0x80) -- HELLO
-local f_f_controller_sensor  = ProtoField.bool  ("fujitsuair.feature.controller_sensor" , "Controller Sensor"      ,        8, nil , 0x40) -- HELLO -- could be sensor switching instead, check with functions 42 and 48 set to 1
-local f_unk17                = ProtoField.uint8 ("fujitsuair.unknown17"                 , "Unknown"                , base.DEC, nil , 0x3F) -- HELLO
+local f_f_filter_maint       = ProtoField.bool  ("fujitsuair.feature.filter_maint"      , "Filter Maintenance"     ,        8, nil , 0x80) -- IU HELLO
+local f_f_sensor_switching   = ProtoField.bool  ("fujitsuair.feature.sensor_switching"  , "Sensor Switching"       ,        8, nil , 0x40) -- IU HELLO
+-- local f_f_swing              = ProtoField.bool  ("fujitsuair.feature.swing"             , "Swing"                  ,        8, nil , 0x01) -- IU HELLO -- guess, have not tested yet -- fuji-iot has this bit set in capture and supports swing
+local f_unk17                = ProtoField.uint8 ("fujitsuair.unknown17"                 , "Unknown"                , base.DEC, nil , 0x3F) -- IU HELLO
 -- byte 6
-local f_unk10                = ProtoField.uint8 ("fujitsuair.unknown10"                 , "Unknown"                , base.DEC, nil, 0xFF) -- HELLO
-local f_unk11                = ProtoField.uint8 ("fujitsuair.unknown11"                 , "Unknown"                , base.DEC, nil, 0xC0) -- STATUS -- more bits for temperature?
-local f_controller_temp      = ProtoField.uint8 ("fujitsuair.controller_temp"           , "Controller Temperature" , base.DEC, nil, 0x3E) -- STATUS -- need to increase controller temp above 31C (88F) to check 1 bit, 63C (145F) to check 2 bits
-local f_controller_connected = ProtoField.bool  ("fujitsuair.controller_connected"      , "Controller Connected"   ,        8, nil, 0x01) -- STATUS
+local f_unk10                = ProtoField.uint8 ("fujitsuair.unknown10"                 , "Unknown"                , base.DEC, nil, 0xFF) -- IU HELLO
+local f_unk19                = ProtoField.uint8 ("fujitsuair.unknown19"                 , "Unknown"                , base.DEC, nil, 0xFC) -- IU STATUS
+local f_seen_secondary_rc    = ProtoField.bool  ("fujitsuair.seen_secondary_rc"         , "Seen Secondary RC"      ,        8, nil, 0x02) -- IU STATUS
+local f_seen_primary_rc      = ProtoField.bool  ("fujitsuair.seen_primary_rc"           , "Seen Primary RC"        ,        8, nil, 0x01) -- IU STATUS
+local f_unk11                = ProtoField.uint8 ("fujitsuair.unknown11"                 , "Unknown"                , base.DEC, nil, 0xC0) -- RC STATUS -- more bits for temperature?
+local f_controller_temp      = ProtoField.uint8 ("fujitsuair.controller_temp"           , "Controller Temperature" , base.DEC, nil, 0x3E) -- RC STATUS -- need to increase controller temp above 31C (88F) to check 1 bit, 63C (145F) to check 2 bits
+local f_unk20                = ProtoField.uint8 ("fujitsuair.unknown20"                 , "Unknown"                , base.DEC, nil, 0x01) -- RC STATUS
 local f_unk14                = ProtoField.uint8 ("fujitsuair.unknown14"                 , "Unknown"                , base.DEC, nil, 0xFF) -- FUNCTION
 -- byte 7
-local f_unk12                = ProtoField.uint8 ("fujitsuair.unknown12"  , "Unknown"     , base.DEC, nil, 0xFF) -- STATUS, HELLO
+local f_unk12                = ProtoField.uint8 ("fujitsuair.unknown12"  , "Unknown"     , base.DEC, nil, 0xFF) -- STATUS, IU HELLO
 local f_unk15                = ProtoField.uint8 ("fujitsuair.unknown15"  , "Unknown"     , base.DEC, nil, 0xF0) -- FUNCTION
-local f_indoorunit           = ProtoField.uint8 ("fujitsuair.indoorunit" , "Indoor Unit" , base.DEC, nil, 0x0F) -- FUNCTION -- maybe all?
+local f_indoorunit           = ProtoField.uint8 ("fujitsuair.indoorunit" , "Indoor Unit" , base.DEC, nil, 0x0F) -- FUNCTION -- maybe ALL?
 
 -- missing powerful, min heat...may need ir controller accessory to find...
 
@@ -97,8 +101,9 @@ p_fujitsuair.fields = {
     f_unk4, f_error, f_fan, f_mode, f_enabled, f_unk13,                       -- byte 3
     f_unk5, f_unk6, f_errcode, f_eco, f_testrun, f_temp, f_function,          -- byte 4
     f_unk7, f_controller_sensor, f_unk8, f_swing, f_sstep, f_unk9, f_funcval, -- byte 5
-    f_f_filter_maint, f_f_controller_sensor, f_unk17,                         -- byte 5
-    f_unk10, f_unk11, f_controller_temp, f_controller_connected, f_unk14,     -- byte 6
+    f_f_filter_maint, f_f_sensor_switching, f_unk17,                          -- byte 5
+    f_unk10, f_unk11, f_controller_temp, f_unk20, f_unk14,                    -- byte 6
+    f_unk19, f_seen_secondary_rc, f_seen_primary_rc,                          -- byte 6
     f_unk12, f_unk15, f_indoorunit                                            -- byte 7
 }
 
@@ -197,18 +202,28 @@ function p_fujitsuair.dissector(buf, pinfo, tree)
         statustree:add(f_testrun , buf(4,1))
         statustree:add(f_unk6    , buf(4,1))
         statustree:add(f_temp    , buf(4,1)):append_text("°C")
-        -- byte 5
-        statustree:add(f_controller_sensor , buf(5,1))
-        statustree:add(f_unk8          , buf(5,1))
-        statustree:add(f_swing         , buf(5,1))
-        statustree:add(f_sstep         , buf(5,1))
-        statustree:add(f_unk9          , buf(5,1))
-        -- byte 6
-        statustree:add(f_unk11            , buf(6,1))
-        statustree:add(f_controller_temp      , buf(6,1)):append_text("°C")
-        statustree:add(f_controller_connected , buf(6,1))
+
+        if srctype == 0 then -- INDOOR UNIT
+            -- byte 5
+            statustree:add(f_unk7              , buf(5,1))
+            -- byte 6
+            statustree:add(f_unk19             , buf(6,1))
+            statustree:add(f_seen_secondary_rc , buf(6,1))
+            statustree:add(f_seen_primary_rc   , buf(6,1))
+        else -- REMOTE
+            -- byte 5
+            statustree:add(f_controller_sensor , buf(5,1))
+            statustree:add(f_unk8              , buf(5,1))
+            statustree:add(f_swing             , buf(5,1))
+            statustree:add(f_sstep             , buf(5,1))
+            statustree:add(f_unk9              , buf(5,1))
+            -- byte 6
+            statustree:add(f_unk11             , buf(6,1))
+            statustree:add(f_controller_temp   , buf(6,1)):append_text("°C")
+            statustree:add(f_unk20             , buf(6,1))
+        end
         -- byte 7
-        subtree:add(f_unk12      , buf(7,1))
+        subtree:add(f_unk12   , buf(7,1))
 
         used = used + 5
     elseif ptype == 1 then -- ERROR
@@ -219,20 +234,22 @@ function p_fujitsuair.dissector(buf, pinfo, tree)
 
         used = used + 2
     elseif ptype == 2 then -- HELLO -- unknown fields are probably indoor unit informing controller what is supported (for example swing mode)
-        -- byte 3                   -- need to emulate indoor unit and see how controller reacts to different bits flipped...
-        subtree:add(f_unk4            , buf(3,1))
-        -- byte 4
-        subtree:add(f_unk5            , buf(4,1))
-        -- byte 5
-        local featuretree = subtree:add("", "Supported Features")
-        featuretree:add(f_f_filter_maint  , buf(5,1))
-        featuretree:add(f_f_controller_sensor , buf(5,1))
-        subtree:add(f_unk17           , buf(5,1))
-        -- byte 6
-        subtree:add(f_unk10           , buf(6,1))
-        -- byte 7
-        subtree:add(f_unk12           , buf(7,1))
-
+                                    -- need to emulate indoor unit and see how controller reacts to different bits flipped...
+        if srctype == 0 then -- INDOOR UNIT
+            -- byte 3
+            subtree:add(f_unk4   , buf(3,1))
+            -- byte 4
+            subtree:add(f_unk5   , buf(4,1))
+            -- byte 5
+            local featuretree = subtree:add("", "Supported Features")
+            featuretree:add(f_f_filter_maint     , buf(5,1))
+            featuretree:add(f_f_sensor_switching , buf(5,1))
+            subtree:add(f_unk17           , buf(5,1))
+            -- byte 6
+            subtree:add(f_unk10  , buf(6,1))
+            -- byte 7
+            subtree:add(f_unk12  , buf(7,1))
+        end
         used = used + 5
     elseif ptype == 3 then -- FUNCTION
         -- byte 3
