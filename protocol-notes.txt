@@ -1,0 +1,62 @@
+I am using
+
+ARU18RLF
+UTY-RNNUM
+UTY-RSNUM
+
+These are connected with three wires, and is commonly called RWB type after the wire colors Red-White-Black. Some systems use a two wire connection instead.
+
+I do not have multiple indoor units setup with group control, so cannot document that aspect of the protocol.
+
+Fujitsu Mobile Technician app states models with fourth character being a letter use a new serial communication method, however the following appears to use a remote compatible with my system.
+
+ARYG60LHTA Installation manual states compatible with UTY-RNN*M and UTY-RSN*M and in section 5.1 (Remote Control Installation: Group Control):
+ A number of indoor units can be operated at the same time using a single remote controller. Connect up to 16 indoor units in a system.
+ R.C. address = Remote controller address
+ Set the R.C. address of each indoor unit using the DIP switch on the indoor unit circuit board.
+ Valid R.C. addresses are 0-15
+ Be sure to set consecutive R.C. address. The indoor units cannot be operated if a number is skipped.
+ R.C. address is not the same as refrigerant circuit address
+ R.C. address is not the same as remote control Primary/Secondary
+ Turn on the indoor unit with the R.C. address 00 last. (Within 1 minute)
+
+ARU18RLF Installation Manual does not have these details but states compatible with UTY-RNNUM and UTY-RSNUM
+ Refers to R.C. address as Unit number of indoor unit.
+
+I will refer to 
+ Indoor unit as IU,
+ Remote control as RC,
+ R.C. address / unit number of indoor unit as IU address or IU#,
+ Primary/Secondary remote control as RC0/RC1
+
+When operating as group control, all IU have settings changed simultaneously (for example RC set to heat mode, all IU switch to heat mode).
+The only time RC changes something on individual IU is when setting function values, where IU address, function number, and setting value are all specified.
+
+If two primary RC are connected, they transmit at the same time and corrupt packet is created on bus.
+
+Packets are 8 bytes.
+
+Protocol appears to be token based. First byte includes source address, second byte address of who may transmit next, NOT who packet is for.
+IU0 uses data from packets where second byte address is IU1, RC1...
+ For example, with both primary and secondary RC where RC0 has temperature sensor, STATUS packet goes IU0 -> RC0 -> RC1 -> IU1.
+ RC0 sets sensor temperature in STATUS packet, RC1 sets sensor temperature as 0, but IU0 still uses sensor value from RC0.
+
+Token order appears to be IU0 -> RC0 -> RC1 -> RC2 -> ... -> IU1 (-> IU2 -> IU3 -> ...?)
+
+After token is assigned to address which does not respond (timeout of a few hundred milliseconds), IU0 restarts token.
+
+At power on, IU0 emits packets:
+ Unknown (PERIODIC) from IU0 -> IU0 repeating every 30 seconds, occasionally at other times resetting 30 second timer.
+ Current status (STATUS) from IU0 -> RC0 repeating at just under 1 second intervals
+ Current status (STATUS) from IU0 -> IU1 repeating at just under 1 second intervals
+
+If RC0 transmits, IU0 -> IU1 STATUS stops. Most likely, this allows all IU to stay in sync when no RC is present, if IU1 responds, likely IU0 -> RC0 continues, or is replaced by IU1 -> RC0.
+
+When primary RC (RC0) receives token from IU0 for first time, it transmits HELLO from RC0 to IU1.
+Next cycle, IU0 transmits HELLO which appears to detail capabilities (***RENAME HELLO TO FEATURES or CAPABILITIES?***). RC knows which buttons (swing, sensor switching, ...) are available from this packet, can display lock icon if button pressed for unsupported feature.
+Next RC0 transmits own STATUS giving token to RC1.
+
+If there is a secondary RC, RC1 transmits STATUS, giving token to RC2. Next cycle, RC1 again gives token to RC2. Following cycles, RC1 gives token to IU1. Likely if RC2 were to transmit, RC1 would continue to give token to RC2, and RC2 would look for RC3 and then revert to IU1.
+
+If there is no secondary RC, next cycle RC0 gives token to IU1.
+
