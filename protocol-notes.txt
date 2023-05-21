@@ -52,8 +52,8 @@ At power on, IU0 emits packets:
 
 If RC0 transmits, IU0 -> IU1 STATUS stops. Most likely, this allows all IU to stay in sync when no RC is present, if IU1 responds, likely IU0 -> RC0 continues, or is replaced by IU1 -> RC0.
 
-When primary RC (RC0) receives token from IU0 for first time, it transmits HELLO from RC0 to IU1.
-Next cycle, IU0 transmits HELLO which appears to detail capabilities (***RENAME HELLO TO FEATURES or CAPABILITIES?***). RC knows which buttons (swing, sensor switching, ...) are available from this packet, can display lock icon if button pressed for unsupported feature.
+When primary RC (RC0) receives token from IU0 for first time, it transmits FEATURES from RC0 to IU1.
+Next cycle, IU0 transmits FEATURES which appears to details features/capabilities supported by indoor unit. RC knows which buttons (swing, sensor switching, ...) are available from this packet, can display lock icon if button pressed for unsupported feature.
 Next RC0 transmits own STATUS giving token to RC1.
 
 If there is a secondary RC, RC1 transmits STATUS, giving token to RC2. Next cycle, RC1 again gives token to RC2. Following cycles, RC1 gives token to IU1. Likely if RC2 were to transmit, RC1 would continue to give token to RC2, and RC2 would look for RC3 and then revert to IU1.
