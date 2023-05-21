@@ -158,7 +158,7 @@ function p_fujitsuair.dissector(buf, pinfo, tree)
         if (track_unique[srcdst][i] == data) then
             subtree:add(f_duplicate, true):set_generated()
             subtree:add(f_dup_frame, i):set_generated()
-        else
+        elseif (track_unique[srcdst][frame_no] == nil) then
             track_unique[srcdst][frame_no] = data
             track_unique_list[srcdst][#track_unique_list[srcdst] + 1] = frame_no
         end
