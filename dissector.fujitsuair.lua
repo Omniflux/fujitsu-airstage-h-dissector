@@ -91,9 +91,9 @@ local f_unk7                 = ProtoField.uint8 ("fujitsuair.unknown7"          
 local f_controller_sensor    = ProtoField.bool  ("fujitsuair.controller_sensor"         , "Use Controller Sensor"  ,        8, nil , 0x80) -- RC STATUS
 local f_unk8                 = ProtoField.uint8 ("fujitsuair.unknown8"                  , "Unknown"                , base.DEC, nil , 0x60) -- RC STATUS
 local f_swing_horizontal     = ProtoField.bool  ("fujitsuair.swing_horizontal"          , "Swing Horizontal"       ,        8, nil , 0x10) -- RC STATUS -- missing IU STATUS - find with emulator?
-local f_set_horizontal_louver= ProtoField.bool  ("fujitsuair.set_horizontal_louver"     , "Set Horizontal Louver"  ,        8, nil , 0x08) -- RC STATUS -- missing IU STATUS - find with emulator?
+local f_set_horizontal_louver= ProtoField.bool  ("fujitsuair.set_horizontal_louver"     , "Set Horizontal Louver"  ,        8, nil , 0x08) -- RC STATUS
 local f_swing_vertical       = ProtoField.bool  ("fujitsuair.swing_vertical"            , "Swing Vertical"         ,        8, nil , 0x04) -- RC STATUS -- missing IU STATUS - find with emulator?
-local f_set_vertical_louver  = ProtoField.bool  ("fujitsuair.set_vertical_louver"       , "Set Vertical Louver"    ,        8, nil , 0x02) -- RC STATUS -- missing IU STATUS - find with emulator?
+local f_set_vertical_louver  = ProtoField.bool  ("fujitsuair.set_vertical_louver"       , "Set Vertical Louver"    ,        8, nil , 0x02) -- RC STATUS
 local f_unk9                 = ProtoField.uint8 ("fujitsuair.unknown9"                  , "Unknown"                , base.DEC, nil , 0x01) -- RC STATUS
 local f_funcval              = ProtoField.uint8 ("fujitsuair.function_value"            , "Function Value"         , base.DEC, nil , 0xFF) -- FUNCTION
 -- byte 6
