@@ -75,7 +75,7 @@ local f_f_fan_auto           = ProtoField.bool  ("fujitsuair.feature.fan_auto"  
 local f_errcode              = ProtoField.uint8 ("fujitsuair.errcode"                   , "Error Code"             , base.HEX)             -- ERROR
 local f_eco                  = ProtoField.bool  ("fujitsuair.eco"                       , "Economy Mode"           ,        8, nil , 0x80) -- STATUS
 local f_testrun              = ProtoField.bool  ("fujitsuair.testrun"                   , "Test Run"               ,        8, nil , 0x40) -- STATUS
-local f_unk6                 = ProtoField.uint8 ("fujitsuair.unknown6"                  , "Unknown"                , base.DEC, nil , 0x20) -- STATUS -- more bits for temperature?
+local f_unk6                 = ProtoField.uint8 ("fujitsuair.unknown6"                  , "Unknown"                , base.DEC, nil , 0x20) -- STATUS -- another bit for temperature? sign bit?
 local f_temp                 = ProtoField.uint8 ("fujitsuair.temperature_setpoint"      , "Temperature Setpoint"   , base.DEC, nil , 0x1F) -- STATUS -- celcius 16C (0x10) - 30C (0x1E) valid?
 local f_function             = ProtoField.uint8 ("fujitsuair.function"                  , "Function"               , base.DEC, nil , 0xFF) -- FUNCTION -- maybe 7 bits? function #99 (0x63) appears to be maximum
 -- byte 5
@@ -91,9 +91,9 @@ local f_unk7                 = ProtoField.uint8 ("fujitsuair.unknown7"          
 local f_controller_sensor    = ProtoField.bool  ("fujitsuair.controller_sensor"         , "Use Controller Sensor"  ,        8, nil , 0x80) -- RC STATUS
 local f_unk8                 = ProtoField.uint8 ("fujitsuair.unknown8"                  , "Unknown"                , base.DEC, nil , 0x60) -- RC STATUS
 local f_swing_horizontal     = ProtoField.bool  ("fujitsuair.swing_horizontal"          , "Swing Horizontal"       ,        8, nil , 0x10) -- RC STATUS -- missing IU STATUS - find with emulator?
-local f_swing_horizontal_step= ProtoField.bool  ("fujitsuair.swing_horizontal_step"     , "Swing Horizontal Step"  ,        8, nil , 0x08) -- RC STATUS
+local f_set_horizontal_louver= ProtoField.bool  ("fujitsuair.set_horizontal_louver"     , "Set Horizontal Louver"  ,        8, nil , 0x08) -- RC STATUS -- missing IU STATUS - find with emulator?
 local f_swing_vertical       = ProtoField.bool  ("fujitsuair.swing_vertical"            , "Swing Vertical"         ,        8, nil , 0x04) -- RC STATUS -- missing IU STATUS - find with emulator?
-local f_swing_vertical_step  = ProtoField.bool  ("fujitsuair.swing_vertical_step"       , "Swing Vertical Step"    ,        8, nil , 0x02) -- RC STATUS
+local f_set_vertical_louver  = ProtoField.bool  ("fujitsuair.set_vertical_louver"       , "Set Vertical Louver"    ,        8, nil , 0x02) -- RC STATUS -- missing IU STATUS - find with emulator?
 local f_unk9                 = ProtoField.uint8 ("fujitsuair.unknown9"                  , "Unknown"                , base.DEC, nil , 0x01) -- RC STATUS
 local f_funcval              = ProtoField.uint8 ("fujitsuair.function_value"            , "Function Value"         , base.DEC, nil , 0xFF) -- FUNCTION
 -- byte 6
@@ -127,8 +127,8 @@ p_fujitsuair.fields = {
     f_unk5, f_unk6, f_errcode, f_eco, f_testrun, f_temp, f_function,          -- byte 4
     f_f_filter_reset, f_f_sensor_switching, f_unk17, f_f_maintenance_button,  -- byte 5
     f_f_economy_mode, f_f_swing_horizontal, f_f_swing_vertical, f_unk7,       -- byte 5
-    f_controller_sensor, f_unk8, f_swing_horizontal, f_swing_horizontal_step, -- byte 5
-    f_swing_vertical, f_swing_vertical_step, f_unk9, f_funcval,               -- byte 5
+    f_controller_sensor, f_unk8, f_swing_horizontal, f_set_horizontal_louver, -- byte 5
+    f_swing_vertical, f_set_vertical_louver, f_unk9, f_funcval,               -- byte 5
     f_unk10, f_unk11, f_controller_temp, f_unk20, f_unk14,                    -- byte 6
     f_unk19, f_seen_secondary_rc, f_seen_primary_rc,                          -- byte 6
     f_unk12, f_unk22, f_filter_reset, f_maintenance, f_unk23,                 -- byte 7
@@ -245,9 +245,9 @@ function p_fujitsuair.dissector(buf, pinfo, tree)
             statustree:add(f_controller_sensor     , buf(5,1))
             statustree:add(f_unk8                  , buf(5,1))
             statustree:add(f_swing_horizontal      , buf(5,1))
-            statustree:add(f_swing_horizontal_step , buf(5,1))
+            statustree:add(f_set_horizontal_louver , buf(5,1))
             statustree:add(f_swing_vertical        , buf(5,1))
-            statustree:add(f_swing_vertical_step   , buf(5,1))
+            statustree:add(f_set_vertical_louver   , buf(5,1))
             statustree:add(f_unk9                  , buf(5,1))
             -- byte 6
             statustree:add(f_unk11                 , buf(6,1))
