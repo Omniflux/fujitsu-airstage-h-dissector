@@ -84,8 +84,8 @@ local f_f_sensor_switching   = ProtoField.bool  ("fujitsuair.feature.sensor_swit
 local f_unk17                = ProtoField.uint8 ("fujitsuair.unknown17"                 , "Unknown"                , base.DEC, nil , 0x30) -- IU FEATURES
 local f_f_maintenance_button = ProtoField.bool  ("fujitsuair.feature.maintenance_button", "Maintenance Button"     ,        8, nil , 0x08) -- IU FEATURES
 local f_f_economy_mode       = ProtoField.bool  ("fujitsuair.feature.economy_mode"      , "Economy Mode"           ,        8, nil , 0x04) -- IU FEATURES
-local f_f_swing_horizontal   = ProtoField.bool  ("fujitsuair.feature.swint_horizontal"  , "Swing Horizontal"       ,        8, nil , 0x02) -- IU FEATURES
-local f_f_swing_vertical     = ProtoField.bool  ("fujitsuair.feature.swing_vertical"    , "Swing Vertical"         ,        8, nil , 0x01) -- IU FEATURES
+local f_f_swing_horizontal   = ProtoField.bool  ("fujitsuair.feature.horizontal_louvers", "Horizontal Louvers"     ,        8, nil , 0x02) -- IU FEATURES
+local f_f_swing_vertical     = ProtoField.bool  ("fujitsuair.feature.vertical_louvers"  , "Vertical Louvers"       ,        8, nil , 0x01) -- IU FEATURES
 
 local f_unk7                 = ProtoField.uint8 ("fujitsuair.unknown7"                  , "Unknown"                , base.DEC, nil , 0xFF) -- IU STATUS
 local f_controller_sensor    = ProtoField.bool  ("fujitsuair.controller_sensor"         , "Use Controller Sensor"  ,        8, nil , 0x80) -- RC STATUS
