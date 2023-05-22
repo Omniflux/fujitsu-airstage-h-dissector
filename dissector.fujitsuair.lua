@@ -89,26 +89,32 @@ local f_f_swing_vertical     = ProtoField.bool  ("fujitsuair.feature.swing_verti
 
 local f_unk7                 = ProtoField.uint8 ("fujitsuair.unknown7"                  , "Unknown"                , base.DEC, nil , 0xFF) -- IU STATUS
 local f_controller_sensor    = ProtoField.bool  ("fujitsuair.controller_sensor"         , "Use Controller Sensor"  ,        8, nil , 0x80) -- RC STATUS
-local f_unk8                 = ProtoField.uint8 ("fujitsuair.unknown8"                  , "Unknown"                , base.DEC, nil , 0x78) -- RC STATUS
-local f_swing                = ProtoField.bool  ("fujitsuair.swing"                     , "Swing"                  ,        8, nil , 0x04) -- RC STATUS -- not confirmed (enable/disable)
-local f_sstep                = ProtoField.bool  ("fujitsuair.swingstep"                 , "Swing Step"             ,        8, nil , 0x02) -- RC STATUS -- not confirmed (change to next position (position not reported, always 0 from indoor unit))
+local f_unk8                 = ProtoField.uint8 ("fujitsuair.unknown8"                  , "Unknown"                , base.DEC, nil , 0x60) -- RC STATUS
+local f_swing_horizontal     = ProtoField.bool  ("fujitsuair.swing_horizontal"          , "Swing Horizontal"       ,        8, nil , 0x10) -- RC STATUS -- missing IU STATUS - find with emulator?
+local f_swing_horizontal_step= ProtoField.bool  ("fujitsuair.swing_horizontal_step"     , "Swing Horizontal Step"  ,        8, nil , 0x08) -- RC STATUS
+local f_swing_vertical       = ProtoField.bool  ("fujitsuair.swing_vertical"            , "Swing Vertical"         ,        8, nil , 0x04) -- RC STATUS -- missing IU STATUS - find with emulator?
+local f_swing_vertical_step  = ProtoField.bool  ("fujitsuair.swing_vertical_step"       , "Swing Vertical Step"    ,        8, nil , 0x02) -- RC STATUS
 local f_unk9                 = ProtoField.uint8 ("fujitsuair.unknown9"                  , "Unknown"                , base.DEC, nil , 0x01) -- RC STATUS
 local f_funcval              = ProtoField.uint8 ("fujitsuair.function_value"            , "Function Value"         , base.DEC, nil , 0xFF) -- FUNCTION
 -- byte 6
-local f_unk10                = ProtoField.uint8 ("fujitsuair.unknown10"                 , "Unknown"                , base.DEC, nil, 0xFF) -- IU FEATURES
-local f_unk19                = ProtoField.uint8 ("fujitsuair.unknown19"                 , "Unknown"                , base.DEC, nil, 0xFC) -- IU STATUS
-local f_seen_secondary_rc    = ProtoField.bool  ("fujitsuair.seen_secondary_rc"         , "Seen Secondary RC"      ,        8, nil, 0x02) -- IU STATUS
-local f_seen_primary_rc      = ProtoField.bool  ("fujitsuair.seen_primary_rc"           , "Seen Primary RC"        ,        8, nil, 0x01) -- IU STATUS
-local f_unk11                = ProtoField.uint8 ("fujitsuair.unknown11"                 , "Unknown"                , base.DEC, nil, 0x80) -- RC STATUS -- more bits for temperature?
-local f_controller_temp      = ProtoField.uint8 ("fujitsuair.controller_temp"           , "Controller Temperature" , base.DEC, nil, 0x7E) -- RC STATUS -- need to increase controller temp above 63C (145F) to check
-local f_unk20                = ProtoField.uint8 ("fujitsuair.unknown20"                 , "Unknown"                , base.DEC, nil, 0x01) -- RC STATUS -- 0.5 degrees C?
-local f_unk14                = ProtoField.uint8 ("fujitsuair.unknown14"                 , "Unknown"                , base.DEC, nil, 0xFF) -- FUNCTION
+local f_unk10                = ProtoField.uint8 ("fujitsuair.unknown10"                 , "Unknown"                , base.DEC, nil , 0xFF) -- IU FEATURES
+local f_unk19                = ProtoField.uint8 ("fujitsuair.unknown19"                 , "Unknown"                , base.DEC, nil , 0xFC) -- IU STATUS
+local f_seen_secondary_rc    = ProtoField.bool  ("fujitsuair.seen_secondary_rc"         , "Seen Secondary RC"      ,        8, nil , 0x02) -- IU STATUS
+local f_seen_primary_rc      = ProtoField.bool  ("fujitsuair.seen_primary_rc"           , "Seen Primary RC"        ,        8, nil , 0x01) -- IU STATUS
+local f_unk11                = ProtoField.uint8 ("fujitsuair.unknown11"                 , "Unknown"                , base.DEC, nil , 0x80) -- RC STATUS -- probably sign bit; need to decrease controller temp below 0 to check
+local f_controller_temp      = ProtoField.uint8 ("fujitsuair.controller_temp"           , "Controller Temperature" , base.DEC, nil , 0x7E) -- RC STATUS -- max temperature reported by controller is 60C
+local f_unk20                = ProtoField.uint8 ("fujitsuair.unknown20"                 , "Unknown"                , base.DEC, nil , 0x01) -- RC STATUS -- 0.5 degrees C?
+local f_unk14                = ProtoField.uint8 ("fujitsuair.unknown14"                 , "Unknown"                , base.DEC, nil , 0xFF) -- FUNCTION
 -- byte 7
-local f_unk12                = ProtoField.uint8 ("fujitsuair.unknown12"  , "Unknown"     , base.DEC, nil, 0xFF) -- STATUS, IU FEATURES
-local f_unk15                = ProtoField.uint8 ("fujitsuair.unknown15"  , "Unknown"     , base.DEC, nil, 0xF0) -- FUNCTION
-local f_indoorunit           = ProtoField.uint8 ("fujitsuair.indoorunit" , "Indoor Unit" , base.DEC, nil, 0x0F) -- FUNCTION -- maybe ALL?
+local f_unk12                = ProtoField.uint8 ("fujitsuair.unknown12"                 , "Unknown"                , base.DEC, nil , 0xFF) -- IU STATUS, IU FEATURES
+local f_unk22                = ProtoField.uint8 ("fujitsuair.unknown22"                 , "Unknown"                , base.DEC, nil , 0x80) -- RC STATUS
+local f_filter_reset         = ProtoField.bool  ("fujitsuair.filter_reset"              , "Filter Reset"           ,        8, nil , 0x40) -- RC STATUS -- Remote writes this bit, then writes this bit clear in next packet -- missing IU STATUS - find with emulator?
+local f_maintenance          = ProtoField.bool  ("fujitsuair.maintenance"               , "Maintenance"            ,        8, nil , 0x20) -- RC STATUS -- Remote writes this bit, then writes this bit clear in next packet
+local f_unk23                = ProtoField.uint8 ("fujitsuair.unknown23"                 , "Unknown"                , base.DEC, nil , 0x1F) -- RC STATUS
+local f_unk15                = ProtoField.uint8 ("fujitsuair.unknown15"                 , "Unknown"                , base.DEC, nil , 0xF0) -- FUNCTION
+local f_indoorunit           = ProtoField.uint8 ("fujitsuair.indoorunit"                , "Indoor Unit"            , base.DEC, nil , 0x0F) -- FUNCTION -- maybe ALL?
 
--- missing powerful, min heat...may need ir controller accessory to find...
+-- maybe missing powerful, min heat, power diffuser, sleep, coil dry, but may not be available over this protocol, only over built in IR controllers...
 
 p_fujitsuair.fields = {
     f_duplicate, f_dup_frame,
@@ -120,11 +126,13 @@ p_fujitsuair.fields = {
     f_f_fan_quiet, f_f_fan_low, f_f_fan_medium, f_f_fan_high, f_f_fan_auto,   -- byte 4
     f_unk5, f_unk6, f_errcode, f_eco, f_testrun, f_temp, f_function,          -- byte 4
     f_f_filter_reset, f_f_sensor_switching, f_unk17, f_f_maintenance_button,  -- byte 5
-    f_f_economy_mode, f_f_swing_horizontal, f_f_swing_vertical,               -- byte 5
-    f_unk7, f_controller_sensor, f_unk8, f_swing, f_sstep, f_unk9, f_funcval, -- byte 5
+    f_f_economy_mode, f_f_swing_horizontal, f_f_swing_vertical, f_unk7,       -- byte 5
+    f_controller_sensor, f_unk8, f_swing_horizontal, f_swing_horizontal_step, -- byte 5
+    f_swing_vertical, f_swing_vertical_step, f_unk9, f_funcval,               -- byte 5
     f_unk10, f_unk11, f_controller_temp, f_unk20, f_unk14,                    -- byte 6
     f_unk19, f_seen_secondary_rc, f_seen_primary_rc,                          -- byte 6
-    f_unk12, f_unk15, f_indoorunit                                            -- byte 7
+    f_unk12, f_unk22, f_filter_reset, f_maintenance, f_unk23,                 -- byte 7
+    f_unk15, f_indoorunit                                                     -- byte 7
 }
 
 local frame_number = Field.new("frame.number")
@@ -230,20 +238,27 @@ function p_fujitsuair.dissector(buf, pinfo, tree)
             statustree:add(f_unk19             , buf(6,1))
             statustree:add(f_seen_secondary_rc , buf(6,1))
             statustree:add(f_seen_primary_rc   , buf(6,1))
+            -- byte 7
+            statustree:add(f_unk12             , buf(7,1))
         else -- REMOTE
             -- byte 5
-            statustree:add(f_controller_sensor , buf(5,1))
-            statustree:add(f_unk8              , buf(5,1))
-            statustree:add(f_swing             , buf(5,1))
-            statustree:add(f_sstep             , buf(5,1))
-            statustree:add(f_unk9              , buf(5,1))
+            statustree:add(f_controller_sensor     , buf(5,1))
+            statustree:add(f_unk8                  , buf(5,1))
+            statustree:add(f_swing_horizontal      , buf(5,1))
+            statustree:add(f_swing_horizontal_step , buf(5,1))
+            statustree:add(f_swing_vertical        , buf(5,1))
+            statustree:add(f_swing_vertical_step   , buf(5,1))
+            statustree:add(f_unk9                  , buf(5,1))
             -- byte 6
-            statustree:add(f_unk11             , buf(6,1))
-            statustree:add(f_controller_temp   , buf(6,1)):append_text("°C")
-            statustree:add(f_unk20             , buf(6,1))
+            statustree:add(f_unk11                 , buf(6,1))
+            statustree:add(f_controller_temp       , buf(6,1)):append_text("°C")
+            statustree:add(f_unk20                 , buf(6,1))
+            -- byte 7
+            statustree:add(f_unk22                 , buf(7,1))
+            statustree:add(f_filter_reset          , buf(7,1))
+            statustree:add(f_maintenance           , buf(7,1))
+            statustree:add(f_unk23                 , buf(7,1))
         end
-        -- byte 7
-        subtree:add(f_unk12   , buf(7,1))
 
         used = used + 5
     elseif ptype == 1 then -- ERROR

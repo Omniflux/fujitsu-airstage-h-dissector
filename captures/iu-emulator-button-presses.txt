@@ -1,0 +1,29 @@
+[16:58:43][I][indoor_unit_emulator:073]:   Received:  20 81 00 4B 18 00 3B 00
+[16:58:44][I][indoor_unit_emulator:073]:   Received:  20 81 08 4B 18 02 3B 00 -- swing vertical next position
+[16:58:45][I][indoor_unit_emulator:073]:   Received:  20 81 08 4B 18 00 3B 00
+
+
+[17:00:09][I][indoor_unit_emulator:073]:   Received:  20 81 00 4B 18 00 3B 00
+[17:00:10][I][indoor_unit_emulator:073]:   Received:  20 81 08 4B 18 08 3B 00 -- swing horizontal next position
+[17:00:12][I][indoor_unit_emulator:073]:   Received:  20 81 08 4B 18 00 3B 00
+
+
+[17:02:02][I][indoor_unit_emulator:073]:   Received:  20 81 00 4B 18 00 3B 00
+[17:02:04][I][indoor_unit_emulator:073]:   Received:  20 81 08 4B 18 04 3B 00 -- swing vertical enable
+[17:02:05][I][indoor_unit_emulator:073]:   Received:  20 81 00 4B 18 00 3B 00
+
+
+[17:03:45][I][indoor_unit_emulator:073]:   Received:  20 81 00 4B 18 00 3B 00
+[17:03:46][I][indoor_unit_emulator:073]:   Received:  20 81 08 4B 18 10 3B 00 -- swing horizontal enable
+[17:03:47][I][indoor_unit_emulator:073]:   Received:  20 81 00 4B 18 00 3B 00
+
+
+[17:10:08][I][indoor_unit_emulator:073]:   Received:  20 81 00 4B 18 00 3B 00
+[17:10:09][I][indoor_unit_emulator:073]:   Received:  20 81 08 4B 18 00 3B 20 -- maintenance button
+[17:10:10][I][indoor_unit_emulator:073]:   Received:  20 81 08 4B 18 00 3B 00
+[17:10:11][I][indoor_unit_emulator:073]:   Received:  20 81 00 4B 18 00 3B 00
+
+[17:11:36][I][indoor_unit_emulator:073]:   Received:  20 81 00 4B 18 00 3B 00
+[17:11:38][I][indoor_unit_emulator:073]:   Received:  20 81 08 4B 18 00 3B 40 -- filter reset
+[17:11:39][I][indoor_unit_emulator:073]:   Received:  20 81 08 4B 18 00 3B 00
+[17:11:40][I][indoor_unit_emulator:073]:   Received:  20 81 00 4B 18 00 3B 00
