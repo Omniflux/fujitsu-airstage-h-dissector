@@ -6,3 +6,4 @@
 | 1684260609 | Remote temperature sensor |
 | 1684260954 | Filter maintenance notification |
 | 1684697704 | Controller temperature 60 degrees C |
+| 1685034938 | Controller temperature 0 degrees C |
