@@ -67,7 +67,7 @@ local f_mode                 = ProtoField.uint8 ("fujitsuair.mode"              
 local f_enabled              = ProtoField.bool  ("fujitsuair.enabled"                   , "Enabled"                ,        8, nil      , 0x01) -- CONFIG
 local f_unk13                = ProtoField.uint8 ("fujitsuair.unknown13"                 , "Unknown"                , base.DEC, nil      , 0xFF) -- FUNCTION
 local f_unk27                = ProtoField.bool  ("fujitsuair.unknown27"                 , "Unknown"                ,        8, nil      , 0x80) -- IU STATUS -- false in first after power on, true thereafter
-local f_unk28                = ProtoField.uint8 ("fujitsuair.unknown28"                 , "Unknown"                , base.DEC, nil      , 0x7F) -- IU STATUS -- seen values 0,1,2,3, 6,7,8,9
+local f_unk28                = ProtoField.uint8 ("fujitsuair.unknown28"                 , "Unknown"                , base.DEC, nil      , 0x7F) -- IU STATUS
 -- byte 4
 local f_unk5                 = ProtoField.uint8 ("fujitsuair.unknown5"                  , "Unknown"                , base.DEC, nil , 0xE0) -- IU FEATURES
 local f_f_fan_quiet          = ProtoField.bool  ("fujitsuair.feature.fan_quiet"         , "Fan Quiet"              ,        8, nil , 0x10) -- IU FEATURES
@@ -82,7 +82,7 @@ local f_testrun              = ProtoField.bool  ("fujitsuair.testrun"           
 local f_unk6                 = ProtoField.uint8 ("fujitsuair.unknown6"                  , "Unknown"                , base.DEC, nil , 0x20) -- CONFIG -- another bit for temperature? sign bit?
 local f_temp                 = ProtoField.uint8 ("fujitsuair.temperature_setpoint"      , "Temperature Setpoint"   , base.DEC, nil , 0x1F) -- CONFIG -- celcius 16C (0x10) - 30C (0x1E) valid?
 local f_function             = ProtoField.uint8 ("fujitsuair.function"                  , "Function"               , base.DEC, nil , 0xFF) -- FUNCTION -- maybe 7 bits? function #99 (0x63) appears to be maximum
-local f_unk29                = ProtoField.uint8 ("fujitsuair.unknown29"                 , "Unknown"                , base.DEC, nil , 0xFF) -- IU STATUS
+local f_unk29                = ProtoField.uint8 ("fujitsuair.unknown29"                 , "Unknown"                , base.DEC, nil , 0xFF) -- IU STATUS -- seen values 0,1,2,3, 6,7,8,9
 -- byte 5
 local f_f_filter_reset       = ProtoField.bool  ("fujitsuair.feature.filter_reset"      , "Filter Reset"           ,        8, nil , 0x80) -- IU FEATURES
 local f_f_sensor_switching   = ProtoField.bool  ("fujitsuair.feature.sensor_switching"  , "Sensor Switching"       ,        8, nil , 0x40) -- IU FEATURES
