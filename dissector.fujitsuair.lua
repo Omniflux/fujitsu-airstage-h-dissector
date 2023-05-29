@@ -36,29 +36,29 @@ local f_duplicate = ProtoField.bool     ("fujitsuair.duplicate"       , "Duplica
 local f_dup_frame = ProtoField.framenum ("fujitsuair.duplicate_frame" , "Duplicate Frame" , base.NONE)
 
 -- byte 0
-local f_unk0                 = ProtoField.uint8 ("fujitsuair.unknown0"  , "Unknown"     , base.DEC, nil            , 0xC0) -- ALL
-local f_srctype              = ProtoField.uint8 ("fujitsuair.srctype"   , "Source Type" , base.DEC, addrtype       , 0x20) -- ALL
-local f_unk16                = ProtoField.uint8 ("fujitsuair.unknown16" , "Unknown"     , base.DEC, nil            , 0x10) -- ALL
-local f_src                  = ProtoField.uint8 ("fujitsuair.src"       , "Source"      , base.DEC, nil            , 0x0F) -- ALL
+local f_unk0                 = ProtoField.uint8 ("fujitsuair.unknown0"                  , "Unknown"                , base.DEC, nil        , 0xC0) -- ALL
+local f_src_type             = ProtoField.uint8 ("fujitsuair.src_type"                  , "Source Type"            , base.DEC, addrtype   , 0x20) -- ALL
+local f_unk16                = ProtoField.uint8 ("fujitsuair.unknown16"                 , "Unknown"                , base.DEC, nil        , 0x10) -- ALL
+local f_src                  = ProtoField.uint8 ("fujitsuair.src"                       , "Source"                 , base.DEC, nil        , 0x0F) -- ALL
 -- byte 1
-local f_unk1                 = ProtoField.uint8 ("fujitsuair.unknown1"  , "Unknown"     , base.DEC, nil            , 0xC0) -- ALL
-local f_dsttype              = ProtoField.uint8 ("fujitsuair.dsttype"   , "Dest Type"   , base.DEC, addrtype       , 0x20) -- ALL
-local f_unk18                = ProtoField.uint8 ("fujitsuair.unknown17" , "Unknown"     , base.DEC, nil            , 0x10) -- ALL
-local f_dst                  = ProtoField.uint8 ("fujitsuair.dst"       , "Destination" , base.DEC, nil            , 0x0F) -- ALL
+local f_unk1                 = ProtoField.uint8 ("fujitsuair.unknown1"                  , "Unknown"                , base.DEC, nil        , 0xC0) -- ALL
+local f_token_dst_type       = ProtoField.uint8 ("fujitsuair.token_dst_type"            , "Token Destination Type" , base.DEC, addrtype   , 0x20) -- ALL
+local f_unk18                = ProtoField.uint8 ("fujitsuair.unknown17"                 , "Unknown"                , base.DEC, nil        , 0x10) -- ALL
+local f_token_dst            = ProtoField.uint8 ("fujitsuair.token_dst"                 , "Token Destination"      , base.DEC, nil        , 0x0F) -- ALL
 -- byte 2
-local f_unk2                 = ProtoField.uint8 ("fujitsuair.unknown2"  , "Unknown"     , base.DEC, nil            , 0x80) -- ALL -- not part of type field
-local f_type                 = ProtoField.uint8 ("fujitsuair.type"      , "Type"        , base.DEC, packettype     , 0x70) -- ALL
-local f_standby              = ProtoField.bool  ("fujitsuair.standby"   , "Standby"     ,        8, nil            , 0x08) -- IU CONFIG
-local f_write                = ProtoField.bool  ("fujitsuair.write"     , "Write"       ,        8, nil            , 0x08) -- ALL RC
-local f_unk3                 = ProtoField.uint8 ("fujitsuair.unknown3"  , "Unknown"     , base.DEC, nil            , 0x07) -- ALL RC, IU CONFIG -- RC does not consume CONFIG packets if 0x01 or 0x02 are set
-local f_unk26                = ProtoField.uint8 ("fujitsuair.unknown26" , "Unknown"     , base.DEC, nil            , 0x0F) -- IU STATUS
+local f_unk2                 = ProtoField.uint8 ("fujitsuair.unknown2"                  , "Unknown"                , base.DEC, nil        , 0x80) -- ALL -- not part of type field
+local f_type                 = ProtoField.uint8 ("fujitsuair.type"                      , "Type"                   , base.DEC, packettype , 0x70) -- ALL
+local f_standby              = ProtoField.bool  ("fujitsuair.standby"                   , "Standby"                ,        8, nil        , 0x08) -- IU CONFIG
+local f_write                = ProtoField.bool  ("fujitsuair.write"                     , "Write"                  ,        8, nil        , 0x08) -- ALL RC
+local f_unk3                 = ProtoField.uint8 ("fujitsuair.unknown3"                  , "Unknown"                , base.DEC, nil        , 0x07) -- ALL RC, IU CONFIG -- RC does not consume CONFIG packets if 0x01 or 0x02 are set
+local f_unk26                = ProtoField.uint8 ("fujitsuair.unknown26"                 , "Unknown"                , base.DEC, nil        , 0x0F) -- IU STATUS
 -- byte 3
-local f_unk21                = ProtoField.uint8 ("fujitsuair.unknown21"                 , "Unknown"                , base.DEC, nil , 0xE0) -- IU FEATURES
-local f_f_mode_auto          = ProtoField.bool  ("fujitsuair.feature.mode_auto"         , "Mode Auto"              ,        8, nil , 0x10) -- IU FEATURES
-local f_f_mode_heat          = ProtoField.bool  ("fujitsuair.feature.mode_heat"         , "Mode Heat"              ,        8, nil , 0x08) -- IU FEATURES
-local f_f_mode_fan           = ProtoField.bool  ("fujitsuair.feature.mode_fan"          , "Mode Fan"               ,        8, nil , 0x04) -- IU FEATURES
-local f_f_mode_dry           = ProtoField.bool  ("fujitsuair.feature.mode_dry"          , "Mode Dry"               ,        8, nil , 0x02) -- IU FEATURES
-local f_f_mode_cool          = ProtoField.bool  ("fujitsuair.feature.mode_cool"         , "Mode Cool"              ,        8, nil , 0x01) -- IU FEATURES
+local f_unk21                = ProtoField.uint8 ("fujitsuair.unknown21"                 , "Unknown"                , base.DEC, nil        , 0xE0) -- IU FEATURES
+local f_f_mode_auto          = ProtoField.bool  ("fujitsuair.feature.mode_auto"         , "Mode Auto"              ,        8, nil        , 0x10) -- IU FEATURES
+local f_f_mode_heat          = ProtoField.bool  ("fujitsuair.feature.mode_heat"         , "Mode Heat"              ,        8, nil        , 0x08) -- IU FEATURES
+local f_f_mode_fan           = ProtoField.bool  ("fujitsuair.feature.mode_fan"          , "Mode Fan"               ,        8, nil        , 0x04) -- IU FEATURES
+local f_f_mode_dry           = ProtoField.bool  ("fujitsuair.feature.mode_dry"          , "Mode Dry"               ,        8, nil        , 0x02) -- IU FEATURES
+local f_f_mode_cool          = ProtoField.bool  ("fujitsuair.feature.mode_cool"         , "Mode Cool"              ,        8, nil        , 0x01) -- IU FEATURES
 
 local f_unk4                 = ProtoField.uint8 ("fujitsuair.unknown4"                  , "Unknown"                , base.DEC, nil      , 0xFF) -- ERROR
 local f_error                = ProtoField.bool  ("fujitsuair.error"                     , "Error"                  ,        8, nil      , 0x80) -- CONFIG
@@ -134,8 +134,8 @@ local f_indoorunit           = ProtoField.uint8 ("fujitsuair.indoorunit"        
 
 p_fujitsuair.fields = {
     f_duplicate, f_dup_frame,
-    f_unk0, f_srctype, f_unk16, f_src,                                        -- byte 0
-    f_unk1, f_dsttype, f_unk18, f_dst,                                        -- byte 1
+    f_unk0, f_src_type, f_unk16, f_src,                                       -- byte 0
+    f_unk1, f_token_dst_type, f_unk18, f_token_dst,                           -- byte 1
     f_unk2, f_type, f_standby, f_write, f_unk3, f_unk26,                      -- byte 2
     f_f_mode_auto, f_f_mode_heat, f_f_mode_fan, f_f_mode_dry, f_f_mode_cool,  -- byte 3
     f_unk21, f_unk4, f_error, f_fan, f_mode, f_enabled, f_unk13,              -- byte 3
@@ -220,14 +220,14 @@ function p_fujitsuair.dissector(buf, pinfo, tree)
 
     -- byte 0
     subtree:add(f_unk0    , buf(0,1))
-    subtree:add(f_srctype , buf(0,1))
+    subtree:add(f_src_type, buf(0,1))
     subtree:add(f_unk16   , buf(0,1))
     subtree:add(f_src     , buf(0,1))
     -- byte 1
-    subtree:add(f_unk1    , buf(1,1))
-    subtree:add(f_dsttype , buf(1,1))
-    subtree:add(f_unk18   , buf(1,1))
-    subtree:add(f_dst     , buf(1,1))
+    subtree:add(f_unk1          , buf(1,1))
+    subtree:add(f_token_dst_type, buf(1,1))
+    subtree:add(f_unk18         , buf(1,1))
+    subtree:add(f_token_dst     , buf(1,1))
     -- byte 2
     subtree:add(f_unk2    , buf(2,1))
     subtree:add(f_type    , buf(2,1))
