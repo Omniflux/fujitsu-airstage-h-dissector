@@ -103,6 +103,7 @@ local f_unk25                = ProtoField.uint8 ("fujitsuair.unknown25"         
 local f_set_vertical_louver  = ProtoField.bool  ("fujitsuair.set_vertical_louver"       , "Set Vertical Louver"    ,        8, nil , 0x02) -- RC CONFIG
 local f_unk9                 = ProtoField.uint8 ("fujitsuair.unknown9"                  , "Unknown"                , base.DEC, nil , 0x01) -- RC CONFIG
 local f_funcval              = ProtoField.uint8 ("fujitsuair.function_value"            , "Function Value"         , base.DEC, nil , 0xFF) -- FUNCTION
+local f_unk30                = ProtoField.uint8 ("fujitsuair.unknown30"                 , "Unknown"                , base.DEC, nil , 0xFF) -- IU STATUS -- seen values 0x00, 0x16
 -- byte 6
 local f_unk10                = ProtoField.uint8 ("fujitsuair.unknown10"                 , "Unknown"                , base.DEC, nil , 0xFF) -- IU FEATURES
 local f_lock_filter_reset    = ProtoField.bool  ("fujitsuair.lock.filter_reset"         , "Lock Filter Reset"      ,        8, nil , 0x80) -- IU CONFIG
@@ -118,6 +119,7 @@ local f_unk11                = ProtoField.uint8 ("fujitsuair.unknown11"         
 local f_controller_temp      = ProtoField.uint8 ("fujitsuair.controller_temp"           , "Controller Temperature" , base.DEC, nil , 0x7E) -- RC CONFIG -- temperature range reported by controller is 0C - 60C
 local f_unk20                = ProtoField.uint8 ("fujitsuair.unknown20"                 , "Unknown"                , base.DEC, nil , 0x01) -- RC CONFIG -- 0.5 degrees C?
 local f_unk14                = ProtoField.uint8 ("fujitsuair.unknown14"                 , "Unknown"                , base.DEC, nil , 0xFF) -- FUNCTION
+local f_unk31                = ProtoField.uint8 ("fujitsuair.unknown31"                 , "Unknown"                , base.DEC, nil , 0xFF) -- IU STATUS -- seen values 0x00, 0x01 -- 0x01 heat running?
 -- byte 7
 local f_unk12                = ProtoField.uint8 ("fujitsuair.unknown12"                 , "Unknown"                , base.DEC, nil , 0xFF) -- IU FEATURES
 local f_unk22                = ProtoField.uint8 ("fujitsuair.unknown22"                 , "Unknown"                , base.DEC, nil , 0x80) -- CONFIG
@@ -146,10 +148,10 @@ p_fujitsuair.fields = {
     f_f_economy_mode, f_f_swing_horizontal, f_f_swing_vertical,               -- byte 5
     f_unk7, f_unk24, f_unk25,                                                 -- byte 5
     f_controller_sensor, f_unk8, f_swing_horizontal, f_set_horizontal_louver, -- byte 5
-    f_swing_vertical, f_set_vertical_louver, f_unk9, f_funcval,               -- byte 5
+    f_swing_vertical, f_set_vertical_louver, f_unk9, f_funcval, f_unk30,      -- byte 5
     f_unk10, f_lock_filter_reset, f_lock_on_off, f_lock_mode, f_lock_unknown, -- byte 6
     f_lock_timer, f_lock_all, f_seen_secondary_rc, f_seen_primary_rc,         -- byte 6
-    f_unk11, f_controller_temp, f_unk20, f_unk14,                             -- byte 6
+    f_unk11, f_controller_temp, f_unk20, f_unk14, f_unk31,                    -- byte 6
     f_unk12, f_unk22, f_filter_timer, f_reset_filter_timer, f_maintenance,    -- byte 7
     f_unk19, f_unk23, f_unk15, f_indoorunit                                   -- byte 7
 }
@@ -355,14 +357,18 @@ function p_fujitsuair.dissector(buf, pinfo, tree)
         subtree:add(f_indoorunit , buf(7,1))
 
         used = used + 5
-    elseif ptype == 4 then -- STATUS
+    elseif ptype == 4 and srctype == 0 then -- STATUS
         -- byte 3
         subtree:add(f_unk27 , buf(3,1))
         subtree:add(f_unk28 , buf(3,1))
         -- byte 4
         subtree:add(f_unk29 , buf(4,1))
+        -- byte 5
+        subtree:add(f_unk30 , buf(5,1))
+        -- byte 6
+        subtree:add(f_unk31 , buf(6,1))
 
-        used = used + 2
+        used = used + 4
     end
 
     if (used < frame_len) then
