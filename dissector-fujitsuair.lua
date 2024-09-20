@@ -168,16 +168,6 @@ function p_fujitsuair.init()
 end
 
 function p_fujitsuair.dissector(buf, pinfo, tree)
-    -- Unable to attach as chained dissector, process as post dissector
-    if Fujitsu_post_dissector then
-        local tzsp_encap = { tzsp_encap_f() }
-        if (#tzsp_encap == 0 or tzsp_encap[#tzsp_encap].value ~= tzsp_encap_type) then return end
-
-        local data = { data_f() }
-        if (#data == 0) then return end
-        buf = data[#data].range
-    end
-
     -- Incorrect frame length
     if (buf:len() ~= frame_len) then return end
 
@@ -377,9 +367,4 @@ function p_fujitsuair.dissector(buf, pinfo, tree)
 end
 
 local tzsp_encap_d = DissectorTable.get("tzsp.encap")
-if tzsp_encap_d then
-    tzsp_encap_d:add(tzsp_encap_type, p_fujitsuair)
-else
-    Fujitsu_post_dissector = true
-    register_postdissector(p_fujitsuair)
-end
+tzsp_encap_d:add(tzsp_encap_type, p_fujitsuair)
