@@ -134,6 +134,9 @@ local f_indoorunit           = ProtoField.uint8 ("fujitsuair.indoorunit"        
 -- oil recovery, defrost MAY be different flags from standby although controller displays same symbol for all.
 -- maybe missing powerful, min heat, power diffuser, sleep, coil dry, but may not be available over this protocol, only over built in IR controllers...
 
+-- IU0 -> C0 unknown7 switches from 101 to 010 on eco on/off, then back to 101 on next packet
+-- IU0 -> C0 unknown7 switches from 101 to 000 on min heat on/off, then back to 101 on next packet
+
 p_fujitsuair.fields = {
     f_duplicate, f_dup_frame,
     f_unk0, f_src_type, f_unk16, f_src,                                       -- byte 0
