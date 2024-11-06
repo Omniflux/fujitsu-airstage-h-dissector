@@ -127,9 +127,8 @@ local f_lock_all             = ProtoField.bool  ("fujitsuair.lock.all"          
 local f_seen_secondary_rc    = ProtoField.bool  ("fujitsuair.seen_secondary_rc"         , "Seen Secondary RC"      ,        8, nil , 0x02) -- IU CONFIG
 local f_seen_primary_rc      = ProtoField.bool  ("fujitsuair.seen_primary_rc"           , "Seen Primary RC"        ,        8, nil , 0x01) -- IU CONFIG
 
-local f_unk11                = ProtoField.uint8 ("fujitsuair.unknown11"                 , "Unknown"                , base.DEC, nil , 0x80) -- RC CONFIG -- sign bit?
-local f_controller_temp      = ProtoField.uint8 ("fujitsuair.controller_temp"           , "Controller Temperature" , bit.bor(base.DEC, base.UNIT_STRING), {"°C"}, 0x7E) -- RC CONFIG -- temperature range reported by controller is 0C - 60C
-local f_unk20                = ProtoField.uint8 ("fujitsuair.unknown20"                 , "Unknown"                , base.DEC, nil , 0x01) -- RC CONFIG -- 0.5 degrees C?
+local f_unk11                = ProtoField.uint8 ("fujitsuair.unknown11"                 , "Unknown"                , base.DEC, nil , 0x80) -- RC CONFIG -- sign bit? not used by controllers I have...
+local f_controller_temp      = ProtoField.float ("fujitsuair.controller_temp"           , "Controller Temperature" ,           {"°C"}    ) -- RC CONFIG -- temperature range reported by controller is 0C - 60C in 0.5 degree increments
 local f_unk14                = ProtoField.uint8 ("fujitsuair.unknown14"                 , "Unknown"                , base.DEC, nil , 0xFF) -- FUNCTION
 local f_unk31                = ProtoField.uint8 ("fujitsuair.unknown31"                 , "Unknown"                , base.DEC, nil , 0xFF) -- IU STATUS -- seen values 0x00, 0x01 -- 0x01 heat running?
 local f_unk34                = ProtoField.uint8 ("fujitsuair.unknown35"                 , "Unknown"                , base.DEC, nil , 0xFF) -- RC ZONE CONFIG
@@ -172,7 +171,7 @@ p_fujitsuair.fields = {
     f_unk33,                                                                  -- byte 5
     f_unk10, f_lock_filter_reset, f_lock_on_off, f_lock_mode, f_lock_unknown, -- byte 6
     f_lock_timer, f_lock_all, f_seen_secondary_rc, f_seen_primary_rc,         -- byte 6
-    f_unk11, f_controller_temp, f_unk20, f_unk14, f_unk31,                    -- byte 6
+    f_unk11, f_controller_temp, f_unk14, f_unk31,                             -- byte 6
     f_unk34,                                                                  -- byte 6
     f_unk12, f_unk22, f_filter_timer, f_reset_filter_timer, f_maintenance,    -- byte 7
     f_unk19, f_unk23, f_unk15, f_indoorunit,                                  -- byte 7
@@ -309,8 +308,7 @@ function p_fujitsuair.dissector(buf, pinfo, tree)
             CONFIGtree:add(f_unk9                  , buf(5,1))
             -- byte 6
             CONFIGtree:add(f_unk11                 , buf(6,1))
-            CONFIGtree:add(f_controller_temp       , buf(6,1))
-            CONFIGtree:add(f_unk20                 , buf(6,1))
+            CONFIGtree:add(f_controller_temp       , buf(6,1), buf(6,1):bitfield(1,7) / 2) -- No bit field displayed for floats, unfortunately
             -- byte 7
             CONFIGtree:add(f_unk22                 , buf(7,1))
             CONFIGtree:add(f_reset_filter_timer    , buf(7,1))
