@@ -90,7 +90,7 @@ local f_errcode              = ProtoField.uint8 ("fujitsuair.errcode"           
 local f_eco                  = ProtoField.bool  ("fujitsuair.eco"                       , "Economy Mode"           ,        8, nil , 0x80) -- CONFIG
 local f_testrun              = ProtoField.bool  ("fujitsuair.testrun"                   , "Test Run"               ,        8, nil , 0x40) -- CONFIG
 local f_unk6                 = ProtoField.uint8 ("fujitsuair.unknown6"                  , "Unknown"                , base.DEC, nil , 0x20) -- CONFIG -- another bit for temperature? sign bit?
-local f_temp                 = ProtoField.uint8 ("fujitsuair.temperature_setpoint"      , "Temperature Setpoint"   , base.DEC, nil , 0x1F) -- CONFIG -- celcius 16C (0x10) - 30C (0x1E) valid?
+local f_temp                 = ProtoField.uint8 ("fujitsuair.temperature_setpoint"      , "Temperature Setpoint"   , bit.bor(base.DEC, base.UNIT_STRING), {"°C"}, 0x1F) -- CONFIG -- celcius 16C (0x10) - 30C (0x1E) valid?
 local f_function             = ProtoField.uint8 ("fujitsuair.function"                  , "Function"               , base.DEC, nil , 0xFF) -- FUNCTION -- maybe 7 bits? function #99 (0x63) appears to be maximum
 local f_unk29                = ProtoField.uint8 ("fujitsuair.unknown29"                 , "Unknown"                , base.DEC, nil , 0xFF) -- IU STATUS -- seen values 0,1,2,3, 6,7,8,9
 local f_unk32                = ProtoField.uint8 ("fujitsuair.unknown33"                 , "Unknown"                , base.DEC, nil , 0xFF) -- RC ZONE CONFIG
@@ -128,7 +128,7 @@ local f_seen_secondary_rc    = ProtoField.bool  ("fujitsuair.seen_secondary_rc" 
 local f_seen_primary_rc      = ProtoField.bool  ("fujitsuair.seen_primary_rc"           , "Seen Primary RC"        ,        8, nil , 0x01) -- IU CONFIG
 
 local f_unk11                = ProtoField.uint8 ("fujitsuair.unknown11"                 , "Unknown"                , base.DEC, nil , 0x80) -- RC CONFIG -- sign bit?
-local f_controller_temp      = ProtoField.uint8 ("fujitsuair.controller_temp"           , "Controller Temperature" , base.DEC, nil , 0x7E) -- RC CONFIG -- temperature range reported by controller is 0C - 60C
+local f_controller_temp      = ProtoField.uint8 ("fujitsuair.controller_temp"           , "Controller Temperature" , bit.bor(base.DEC, base.UNIT_STRING), {"°C"}, 0x7E) -- RC CONFIG -- temperature range reported by controller is 0C - 60C
 local f_unk20                = ProtoField.uint8 ("fujitsuair.unknown20"                 , "Unknown"                , base.DEC, nil , 0x01) -- RC CONFIG -- 0.5 degrees C?
 local f_unk14                = ProtoField.uint8 ("fujitsuair.unknown14"                 , "Unknown"                , base.DEC, nil , 0xFF) -- FUNCTION
 local f_unk31                = ProtoField.uint8 ("fujitsuair.unknown31"                 , "Unknown"                , base.DEC, nil , 0xFF) -- IU STATUS -- seen values 0x00, 0x01 -- 0x01 heat running?
@@ -276,7 +276,7 @@ function p_fujitsuair.dissector(buf, pinfo, tree)
         CONFIGtree:add(f_eco     , buf(4,1))
         CONFIGtree:add(f_testrun , buf(4,1))
         CONFIGtree:add(f_unk6    , buf(4,1))
-        CONFIGtree:add(f_temp    , buf(4,1)):append_text("°C")
+        CONFIGtree:add(f_temp    , buf(4,1))
 
         if srctype == 0 then -- INDOOR UNIT
             -- byte 5
@@ -309,7 +309,7 @@ function p_fujitsuair.dissector(buf, pinfo, tree)
             CONFIGtree:add(f_unk9                  , buf(5,1))
             -- byte 6
             CONFIGtree:add(f_unk11                 , buf(6,1))
-            CONFIGtree:add(f_controller_temp       , buf(6,1)):append_text("°C")
+            CONFIGtree:add(f_controller_temp       , buf(6,1))
             CONFIGtree:add(f_unk20                 , buf(6,1))
             -- byte 7
             CONFIGtree:add(f_unk22                 , buf(7,1))
