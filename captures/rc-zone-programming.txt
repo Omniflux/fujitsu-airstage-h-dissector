@@ -1,0 +1,48 @@
+<Zone programming menu opened - vent/zone data is queried>
+[21:09:59][D][fujitsu-halcyon:071][UART_Event]: RX: 20 81 60 00 00 00 0B 00
+[21:09:59][D][fujitsu-halcyon:071][UART_Event]: RX: 00 A0 60 07 00 00 0B 02
+[21:09:59][D][fujitsu-halcyon:071][UART_Event]: RX: 20 81 60 00 00 00 0C 00
+[21:10:00][D][fujitsu-halcyon:071][UART_Event]: RX: 00 A0 60 07 00 00 0C 02
+[21:10:00][D][fujitsu-halcyon:071][UART_Event]: RX: 20 81 60 00 00 00 0D 00
+[21:10:00][D][fujitsu-halcyon:071][UART_Event]: RX: 00 A0 60 07 00 00 0D 01
+[21:10:01][D][fujitsu-halcyon:071][UART_Event]: RX: 20 81 60 00 00 00 0E 00
+[21:10:01][D][fujitsu-halcyon:071][UART_Event]: RX: 00 A0 60 07 00 00 0E 00
+[21:10:01][D][fujitsu-halcyon:071][UART_Event]: RX: 20 81 60 00 00 00 0F 00
+[21:10:02][D][fujitsu-halcyon:071][UART_Event]: RX: 00 A0 60 07 00 00 0F 00
+[21:10:02][D][fujitsu-halcyon:071][UART_Event]: RX: 20 81 60 00 00 00 10 00
+[21:10:02][D][fujitsu-halcyon:071][UART_Event]: RX: 00 A0 60 07 00 00 10 00
+[21:10:02][D][fujitsu-halcyon:071][UART_Event]: RX: 20 81 60 00 00 00 11 00
+[21:10:03][D][fujitsu-halcyon:071][UART_Event]: RX: 00 A0 60 07 00 00 11 00
+[21:10:03][D][fujitsu-halcyon:071][UART_Event]: RX: 20 81 60 00 00 00 12 00
+[21:10:03][D][fujitsu-halcyon:071][UART_Event]: RX: 00 A0 60 07 00 00 12 00
+[21:10:04][D][fujitsu-halcyon:071][UART_Event]: RX: 20 81 60 00 00 00 13 00
+[21:10:04][D][fujitsu-halcyon:071][UART_Event]: RX: 00 A0 60 07 00 00 13 00
+[21:10:04][D][fujitsu-halcyon:071][UART_Event]: RX: 20 81 60 00 00 00 00 00
+[21:10:05][D][fujitsu-halcyon:071][UART_Event]: RX: 00 A0 60 07 00 00 00 00
+[21:10:05][D][fujitsu-halcyon:071][UART_Event]: RX: 20 81 60 00 00 00 00 00
+[21:10:05][D][fujitsu-halcyon:071][UART_Event]: RX: 00 A0 60 07 00 00 00 00
+.... snip ....
+[21:10:51][D][fujitsu-halcyon:071][UART_Event]: RX: 20 81 60 00 00 00 00 00
+[21:10:51][D][fujitsu-halcyon:071][UART_Event]: RX: 00 A0 60 07 00 00 00 00
+[21:10:51][D][fujitsu-halcyon:071][UART_Event]: RX: 20 81 60 00 00 00 00 00
+[21:10:52][D][fujitsu-halcyon:071][UART_Event]: RX: 00 A0 60 07 00 00 00 00
+<Settings saved on controller - vent/zone data is written>
+[21:10:52][D][fujitsu-halcyon:071][UART_Event]: RX: 20 81 60 00 00 80 0B 08
+[21:10:52][D][fujitsu-halcyon:071][UART_Event]: RX: 00 A0 60 07 00 00 0B 08
+[21:10:52][D][fujitsu-halcyon:071][UART_Event]: RX: 20 81 60 00 00 80 0C 07
+[21:10:53][D][fujitsu-halcyon:071][UART_Event]: RX: 00 A0 60 07 00 00 0C 07
+[21:10:53][D][fujitsu-halcyon:071][UART_Event]: RX: 20 81 60 00 00 80 0D 06
+[21:10:53][D][fujitsu-halcyon:071][UART_Event]: RX: 00 A0 60 07 00 00 0D 06
+[21:10:54][D][fujitsu-halcyon:071][UART_Event]: RX: 20 81 60 00 00 80 0E 05
+[21:10:54][D][fujitsu-halcyon:071][UART_Event]: RX: 00 A0 60 0F 00 00 0E 05
+[21:10:54][D][fujitsu-halcyon:071][UART_Event]: RX: 20 81 60 00 00 80 0F 04
+[21:10:55][D][fujitsu-halcyon:071][UART_Event]: RX: 00 A0 60 1F 00 00 0F 04
+[21:10:55][D][fujitsu-halcyon:071][UART_Event]: RX: 20 81 60 00 00 80 10 03
+[21:10:55][D][fujitsu-halcyon:071][UART_Event]: RX: 00 A0 60 3F 00 00 10 03
+[21:10:56][D][fujitsu-halcyon:071][UART_Event]: RX: 20 81 60 00 00 80 11 02
+[21:10:56][D][fujitsu-halcyon:071][UART_Event]: RX: 00 A0 60 7F 00 00 11 02
+[21:10:56][D][fujitsu-halcyon:071][UART_Event]: RX: 20 81 60 00 00 80 12 01
+[21:10:57][D][fujitsu-halcyon:071][UART_Event]: RX: 00 A0 60 FF 00 00 12 01
+[21:10:57][D][fujitsu-halcyon:071][UART_Event]: RX: 20 81 60 00 00 80 13 09
+<Note 3rd byte change indicating 'common' zone is enabled>
+[21:10:57][D][fujitsu-halcyon:071][UART_Event]: RX: 00 A0 68 FF 00 00 13 09
