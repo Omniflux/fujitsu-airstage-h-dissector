@@ -34,6 +34,13 @@ local addrtype = {
     [1] = "CONTROLLER"
 }
 
+local zonegroup = {
+    [0] = "NONE",
+    [1] = "DAY",
+    [2] = "NIGHT",
+    [3] = "ALL",
+}
+
 local f_duplicate = ProtoField.bool     ("fujitsuair.duplicate"       , "Duplicate"       , base.NONE)
 local f_dup_frame = ProtoField.framenum ("fujitsuair.duplicate_frame" , "Duplicate Frame" , base.NONE)
 
@@ -104,7 +111,7 @@ local f_unk29                = ProtoField.uint8 ("fujitsuair.unknown29"         
 local f_unk33                = ProtoField.bool  ("fujitsuair.unknown33"                 , "Unknown"                ,        8, nil , 0x80) -- ZONE CONFIG -- seen bit set when source is indoor unit, otherwise 0
 local f_unk32                = ProtoField.uint8 ("fujitsuair.unknown32"                 , "Unknown"                , base.DEC, nil , 0x60) -- ZONE CONFIG
 local f_unk37                = ProtoField.uint8 ("fujitsuair.unknown37"                 , "Unknown"                , base.DEC, nil , 0x07) -- ZONE CONFIG
-local f_zone_groups          = ProtoField.uint8 ("fujitsuair.zones_groups"              , "Active Zone Groups"     , base.HEX, nil , 0x18) -- ZONE CONFIG -- Group 'all' enables both night + day
+local f_zone_groups          = ProtoField.uint8 ("fujitsuair.zone_groups"               , "Active Zone Groups"     , base.DEC, zonegroup , 0x18) -- ZONE CONFIG -- Group 'all' enables both night + day
 local f_zone_group_night     = ProtoField.bool  ("fujitsuair.zone_groups.night"         , "Zone Group - Night"     ,        8, nil , 0x10) -- ZONE CONFIG
 local f_zone_group_day       = ProtoField.bool  ("fujitsuair.zone_groups.day"           , "Zone Group - Day"       ,        8, nil , 0x08) -- ZONE CONFIG
 local f_unk34                = ProtoField.uint8 ("fujitsuair.unknown34"                 , "Unknown"                , base.HEX, nil , 0xFF) -- ZONE FEATURE
@@ -131,15 +138,21 @@ local f_set_vertical_louver  = ProtoField.bool  ("fujitsuair.set_vertical_louver
 local f_unk9                 = ProtoField.uint8 ("fujitsuair.unknown9"                  , "Unknown"                , base.DEC, nil , 0x01) -- RC CONFIG
 local f_funcval              = ProtoField.uint8 ("fujitsuair.function_value"            , "Function Value"         , base.DEC, nil , 0xFF) -- FUNCTION
 local f_unk30                = ProtoField.uint8 ("fujitsuair.unknown30"                 , "Unknown"                , base.DEC, nil , 0xFF) -- IU STATUS -- seen values 0x00, 0x16
-local f_zone_grouping_1_4    = ProtoField.uint8 ("fujitsuair.zone_grouping_1_4"         , "Zone Group Assoc 1-4"   , base.HEX, nil , 0xFF) -- ZONE CONFIG
-local f_zone4_night          = ProtoField.bool  ("fujitsuair.zone_grouping_1_4.4.night" , "Zone 4 - Night"         ,        8, nil , 0x80) -- ZONE CONFIG
-local f_zone4_day            = ProtoField.bool  ("fujitsuair.zone_grouping_1_4.4.day"   , "Zone 4 - Day"           ,        8, nil , 0x40) -- ZONE CONFIG
-local f_zone3_night          = ProtoField.bool  ("fujitsuair.zone_grouping_1_4.3.night" , "Zone 3 - Night"         ,        8, nil , 0x20) -- ZONE CONFIG
-local f_zone3_day            = ProtoField.bool  ("fujitsuair.zone_grouping_1_4.3.day"   , "Zone 3 - Day"           ,        8, nil , 0x10) -- ZONE CONFIG
-local f_zone2_night          = ProtoField.bool  ("fujitsuair.zone_grouping_1_4.2.night" , "Zone 2 - Night"         ,        8, nil , 0x08) -- ZONE CONFIG
-local f_zone2_day            = ProtoField.bool  ("fujitsuair.zone_grouping_1_4.2.day"   , "Zone 2 - Day"           ,        8, nil , 0x04) -- ZONE CONFIG
-local f_zone1_night          = ProtoField.bool  ("fujitsuair.zone_grouping_1_4.1.night" , "Zone 1 - Night"         ,        8, nil , 0x02) -- ZONE CONFIG
-local f_zone1_day            = ProtoField.bool  ("fujitsuair.zone_grouping_1_4.1.day"   , "Zone 1 - Day"           ,        8, nil , 0x01) -- ZONE CONFIG
+
+local f_zone_grouping_1_4    = ProtoField.uint8 ("fujitsuair.zone_grouping_1_4"         , "Zone Group Assoc 1-4"   , base.HEX,       nil , 0xFF) -- ZONE CONFIG
+local f_zone4_groups         = ProtoField.uint8 ("fujitsuair.zone_grouping_1_4.4"       , "Zone 4 Groups"          , base.DEC, zonegroup , 0xC0) -- ZONE CONFIG
+local f_zone4_night          = ProtoField.bool  ("fujitsuair.zone_grouping_1_4.4.night" , "Zone 4 - Night"         ,        8,       nil , 0x80) -- ZONE CONFIG
+local f_zone4_day            = ProtoField.bool  ("fujitsuair.zone_grouping_1_4.4.day"   , "Zone 4 - Day"           ,        8,       nil , 0x40) -- ZONE CONFIG
+local f_zone3_groups         = ProtoField.uint8 ("fujitsuair.zone_grouping_1_4.3"       , "Zone 3 Groups"          , base.DEC, zonegroup , 0x30) -- ZONE CONFIG
+local f_zone3_night          = ProtoField.bool  ("fujitsuair.zone_grouping_1_4.3.night" , "Zone 3 - Night"         ,        8,       nil , 0x20) -- ZONE CONFIG
+local f_zone3_day            = ProtoField.bool  ("fujitsuair.zone_grouping_1_4.3.day"   , "Zone 3 - Day"           ,        8,       nil , 0x10) -- ZONE CONFIG
+local f_zone2_groups         = ProtoField.uint8 ("fujitsuair.zone_grouping_1_4.2"       , "Zone 2 Groups"          , base.DEC, zonegroup , 0x0C) -- ZONE CONFIG
+local f_zone2_night          = ProtoField.bool  ("fujitsuair.zone_grouping_1_4.2.night" , "Zone 2 - Night"         ,        8,       nil , 0x08) -- ZONE CONFIG
+local f_zone2_day            = ProtoField.bool  ("fujitsuair.zone_grouping_1_4.2.day"   , "Zone 2 - Day"           ,        8,       nil , 0x04) -- ZONE CONFIG
+local f_zone1_groups         = ProtoField.uint8 ("fujitsuair.zone_grouping_1_4.1"       , "Zone 1 Groups"          , base.DEC, zonegroup , 0x03) -- ZONE CONFIG
+local f_zone1_night          = ProtoField.bool  ("fujitsuair.zone_grouping_1_4.1.night" , "Zone 1 - Night"         ,        8,       nil , 0x02) -- ZONE CONFIG
+local f_zone1_day            = ProtoField.bool  ("fujitsuair.zone_grouping_1_4.1.day"   , "Zone 1 - Day"           ,        8,       nil , 0x01) -- ZONE CONFIG
+
 local f_zone_func_write      = ProtoField.bool  ("fujitsuair.zone_func_write"           , "Zone Function Write"    ,        8, nil , 0x80) -- ZONE FUNCTION
 local f_unk38                = ProtoField.uint8 ("fujitsuair.unknown38"                 , "Unknown"                , base.DEC, nil , 0x7F) -- ZONE FUNCTION
 
@@ -159,16 +172,22 @@ local f_unk11                = ProtoField.uint8 ("fujitsuair.unknown11"         
 local f_controller_temp      = ProtoField.float ("fujitsuair.controller_temp"           , "Controller Temperature" ,           {"°C"}    ) -- RC CONFIG -- temperature range reported by controller is 0C - 60C in 0.5 degree increments
 local f_unk14                = ProtoField.uint8 ("fujitsuair.unknown14"                 , "Unknown"                , base.DEC, nil , 0xFF) -- FUNCTION
 local f_unk31                = ProtoField.uint8 ("fujitsuair.unknown31"                 , "Unknown"                , base.DEC, nil , 0xFF) -- IU STATUS -- seen values 0x00, 0x01 -- 0x01 heat running?
-local f_zone_grouping_5_8    = ProtoField.uint8 ("fujitsuair.zone_grouping_5_8"         , "Zone Group Assoc 5-8"   , base.HEX, nil , 0xFF) -- ZONE CONFIG
-local f_zone8_night          = ProtoField.bool  ("fujitsuair.zone_grouping_5_8.8.night" , "Zone 8 - Night"         ,        8, nil , 0x80) -- ZONE CONFIG
-local f_zone8_day            = ProtoField.bool  ("fujitsuair.zone_grouping_5_8.8.day"   , "Zone 8 - Day"           ,        8, nil , 0x40) -- ZONE CONFIG
-local f_zone7_night          = ProtoField.bool  ("fujitsuair.zone_grouping_5_8.7.night" , "Zone 7 - Night"         ,        8, nil , 0x20) -- ZONE CONFIG
-local f_zone7_day            = ProtoField.bool  ("fujitsuair.zone_grouping_5_8.7.day"   , "Zone 7 - Day"           ,        8, nil , 0x10) -- ZONE CONFIG
-local f_zone6_night          = ProtoField.bool  ("fujitsuair.zone_grouping_5_8.6.night" , "Zone 6 - Night"         ,        8, nil , 0x08) -- ZONE CONFIG
-local f_zone6_day            = ProtoField.bool  ("fujitsuair.zone_grouping_5_8.6.day"   , "Zone 6 - Day"           ,        8, nil , 0x04) -- ZONE CONFIG
-local f_zone5_night          = ProtoField.bool  ("fujitsuair.zone_grouping_5_8.5.night" , "Zone 5 - Night"         ,        8, nil , 0x02) -- ZONE CONFIG
-local f_zone5_day            = ProtoField.bool  ("fujitsuair.zone_grouping_5_8.5.day"   , "Zone 5 - Day"           ,        8, nil , 0x01) -- ZONE CONFIG
-local f_zone_func_location   = ProtoField.uint8 ("fujitsuair.zone_func_loction"         , "Zone Function Location" , base.HEX, nil , 0xFF) -- ZONE FUNCTION -- 0x0B thru 0x13 show the outlet count for zones 1-8 + common
+
+local f_zone_grouping_5_8    = ProtoField.uint8 ("fujitsuair.zone_grouping_5_8"         , "Zone Group Assoc 5-8"   , base.HEX,       nil , 0xFF) -- ZONE CONFIG
+local f_zone8_groups         = ProtoField.uint8 ("fujitsuair.zone_grouping_5_8.8"       , "Zone 8 Groups"          , base.DEC, zonegroup , 0xC0) -- ZONE CONFIG
+local f_zone8_night          = ProtoField.bool  ("fujitsuair.zone_grouping_5_8.8.night" , "Zone 8 - Night"         ,        8,       nil , 0x80) -- ZONE CONFIG
+local f_zone8_day            = ProtoField.bool  ("fujitsuair.zone_grouping_5_8.8.day"   , "Zone 8 - Day"           ,        8,       nil , 0x40) -- ZONE CONFIG
+local f_zone7_groups         = ProtoField.uint8 ("fujitsuair.zone_grouping_5_8.7"       , "Zone 7 Groups"          , base.DEC, zonegroup , 0x30) -- ZONE CONFIG
+local f_zone7_night          = ProtoField.bool  ("fujitsuair.zone_grouping_5_8.7.night" , "Zone 7 - Night"         ,        8,       nil , 0x20) -- ZONE CONFIG
+local f_zone7_day            = ProtoField.bool  ("fujitsuair.zone_grouping_5_8.7.day"   , "Zone 7 - Day"           ,        8,       nil , 0x10) -- ZONE CONFIG
+local f_zone6_groups         = ProtoField.uint8 ("fujitsuair.zone_grouping_5_8.6"       , "Zone 6 Groups"          , base.DEC, zonegroup , 0x0C) -- ZONE CONFIG
+local f_zone6_night          = ProtoField.bool  ("fujitsuair.zone_grouping_5_8.6.night" , "Zone 6 - Night"         ,        8,       nil , 0x08) -- ZONE CONFIG
+local f_zone6_day            = ProtoField.bool  ("fujitsuair.zone_grouping_5_8.6.day"   , "Zone 6 - Day"           ,        8,       nil , 0x04) -- ZONE CONFIG
+local f_zone5_groups         = ProtoField.uint8 ("fujitsuair.zone_grouping_5_8.5"       , "Zone 5 Groups"          , base.DEC, zonegroup , 0x03) -- ZONE CONFIG
+local f_zone5_night          = ProtoField.bool  ("fujitsuair.zone_grouping_5_8.5.night" , "Zone 5 - Night"         ,        8,       nil , 0x02) -- ZONE CONFIG
+local f_zone5_day            = ProtoField.bool  ("fujitsuair.zone_grouping_5_8.5.day"   , "Zone 5 - Day"           ,        8,       nil , 0x01) -- ZONE CONFIG
+
+local f_zone_func_location   = ProtoField.uint8 ("fujitsuair.zone_func_location"        , "Zone Function Location" , base.HEX, nil , 0xFF) -- ZONE FUNCTION -- 0x0B thru 0x13 show the outlet count for zones 1-8 + common
 
 -- byte 7
 local f_unk12                = ProtoField.uint8 ("fujitsuair.unknown12"                 , "Unknown"                , base.DEC, nil , 0xFF) -- IU FEATURES
@@ -191,38 +210,46 @@ local f_zone_func_value      = ProtoField.uint8 ("fujitsuair.zone_func_value"   
 
 p_fujitsuair.fields = {
     f_duplicate, f_dup_frame,
+
     f_unk0, f_src_type, f_unk16, f_src,                                       -- byte 0
+
     f_unk1, f_token_dst_type, f_unk18, f_token_dst,                           -- byte 1
+
     f_unk2, f_type, f_standby, f_write, f_unk3, f_unk26,                      -- byte 2
     f_zone_common, f_unk20,                                                   -- byte 2
+
     f_f_mode_auto, f_f_mode_heat, f_f_mode_fan, f_f_mode_dry, f_f_mode_cool,  -- byte 3
     f_unk21, f_unk4, f_error, f_fan, f_mode, f_enabled, f_unk13,              -- byte 3
-    f_unk27, f_unk28,                                                         -- byte 3
-    f_zones,                                                                  -- byte 3
+    f_unk27, f_unk28, f_unk36, f_zones,                                       -- byte 3
     f_zone8, f_zone7, f_zone6, f_zone5, f_zone4, f_zone3, f_zone2, f_zone1,   -- byte 3
-    f_unk36,                                                                  -- byte 3
+
     f_f_fan_quiet, f_f_fan_low, f_f_fan_medium, f_f_fan_high, f_f_fan_auto,   -- byte 4
     f_unk5, f_unk6, f_errcode, f_eco, f_testrun, f_temp, f_function, f_unk29, -- byte 4
     f_unk33, f_unk32, f_zone_groups, f_zone_group_night, f_zone_group_day,    -- byte 4
     f_unk34, f_unk37,                                                         -- byte 4
+
     f_f_filter_timer, f_f_sensor_switching, f_unk17, f_f_maintenance_button,  -- byte 5
     f_f_economy_mode, f_f_swing_horizontal, f_f_swing_vertical,               -- byte 5
     f_unk7, f_unk24, f_unk25,                                                 -- byte 5
     f_controller_sensor, f_unk8, f_swing_horizontal, f_set_horizontal_louver, -- byte 5
     f_swing_vertical, f_set_vertical_louver, f_unk9, f_funcval, f_unk30,      -- byte 5
-    f_zone_grouping_1_4, f_zone4_night, f_zone4_day, f_zone3_night,
-    f_zone3_day, f_zone2_night, f_zone2_day, f_zone1_night, f_zone1_day,      -- byte 5
-    f_zone_func_write, f_unk38,                                               -- byte 5
+    f_zone_grouping_1_4, f_zone_func_write, f_unk38,                          -- byte 5
+    f_zone4_groups, f_zone4_night, f_zone4_day,                               -- byte 5
+    f_zone3_groups, f_zone3_night, f_zone3_day,                               -- byte 5
+    f_zone2_groups, f_zone2_night, f_zone2_day,                               -- byte 5
+    f_zone1_groups, f_zone1_night, f_zone1_day,                               -- byte 5
+
     f_unk10, f_lock_filter_reset, f_lock_on_off, f_lock_mode, f_lock_unknown, -- byte 6
     f_lock_timer, f_lock_all, f_seen_secondary_rc, f_seen_primary_rc,         -- byte 6
     f_unk11, f_controller_temp, f_unk14, f_unk31,                             -- byte 6
-    f_zone_grouping_5_8, f_zone8_night, f_zone8_day, f_zone7_night,
-    f_zone7_day, f_zone6_night, f_zone6_day, f_zone5_night, f_zone5_day,      -- byte 6
-    f_zone_func_location,                                                     -- byte 6
+    f_zone_grouping_5_8, f_zone_func_location,                                -- byte 6
+    f_zone8_groups, f_zone8_night, f_zone8_day,                               -- byte 6
+    f_zone7_groups, f_zone7_night, f_zone7_day,                               -- byte 6
+    f_zone6_groups, f_zone6_night, f_zone6_day,                               -- byte 6
+    f_zone5_groups, f_zone5_night, f_zone5_day,                               -- byte 6
+
     f_unk12, f_unk22, f_filter_timer, f_reset_filter_timer, f_maintenance,    -- byte 7
-    f_unk19, f_unk23, f_unk15, f_indoorunit,                                  -- byte 7
-    f_unk35,                                                                  -- byte 7
-    f_zone_func_value                                                         -- byte 7
+    f_unk19, f_unk23, f_unk15, f_indoorunit, f_unk35, f_zone_func_value       -- byte 7
 }
 
 local frame_number = Field.new("frame.number")
@@ -449,25 +476,33 @@ function p_fujitsuair.dissector(buf, pinfo, tree)
         ZONEGROUPStree:add(f_zone_group_day   , buf(4,1))
         CONFIGtree:add(f_unk37 , buf(4,1))
         -- byte 5
-        local ZONEGROUP1tree = CONFIGtree:add(f_zone_grouping_1_4 , buf(5,1))
-        ZONEGROUP1tree:add(f_zone4_night , buf(5,1))
-        ZONEGROUP1tree:add(f_zone4_day   , buf(5,1))
-        ZONEGROUP1tree:add(f_zone3_night , buf(5,1))
-        ZONEGROUP1tree:add(f_zone3_day   , buf(5,1))
-        ZONEGROUP1tree:add(f_zone2_night , buf(5,1))
-        ZONEGROUP1tree:add(f_zone2_day   , buf(5,1))
+        local ZONEGROUP14tree = CONFIGtree:add(f_zone_grouping_1_4 , buf(5,1))
+        local ZONEGROUP4tree = ZONEGROUP14tree:add(f_zone4_groups , buf(5,1))
+        ZONEGROUP4tree:add(f_zone4_night , buf(5,1))
+        ZONEGROUP4tree:add(f_zone4_day   , buf(5,1))
+        local ZONEGROUP3tree = ZONEGROUP14tree:add(f_zone3_groups , buf(5,1))
+        ZONEGROUP3tree:add(f_zone3_night , buf(5,1))
+        ZONEGROUP3tree:add(f_zone3_day   , buf(5,1))
+        local ZONEGROUP2tree = ZONEGROUP14tree:add(f_zone2_groups , buf(5,1))
+        ZONEGROUP2tree:add(f_zone2_night , buf(5,1))
+        ZONEGROUP2tree:add(f_zone2_day   , buf(5,1))
+        local ZONEGROUP1tree = ZONEGROUP14tree:add(f_zone1_groups , buf(5,1))
         ZONEGROUP1tree:add(f_zone1_night , buf(5,1))
         ZONEGROUP1tree:add(f_zone1_day   , buf(5,1))
         -- byte 6
-        local ZONEGROUP2tree = CONFIGtree:add(f_zone_grouping_5_8 , buf(6,1))
-        ZONEGROUP2tree:add(f_zone8_night , buf(6,1))
-        ZONEGROUP2tree:add(f_zone8_day   , buf(6,1))
-        ZONEGROUP2tree:add(f_zone7_night , buf(6,1))
-        ZONEGROUP2tree:add(f_zone7_day   , buf(6,1))
-        ZONEGROUP2tree:add(f_zone6_night , buf(6,1))
-        ZONEGROUP2tree:add(f_zone6_day   , buf(6,1))
-        ZONEGROUP2tree:add(f_zone5_night , buf(6,1))
-        ZONEGROUP2tree:add(f_zone5_day   , buf(6,1))
+        local ZONEGROUP58tree = CONFIGtree:add(f_zone_grouping_5_8 , buf(6,1))
+        local ZONEGROUP8tree = ZONEGROUP58tree:add(f_zone8_groups , buf(6,1))
+        ZONEGROUP8tree:add(f_zone8_night , buf(6,1))
+        ZONEGROUP8tree:add(f_zone8_day   , buf(6,1))
+        local ZONEGROUP7tree = ZONEGROUP58tree:add(f_zone7_groups , buf(6,1))
+        ZONEGROUP7tree:add(f_zone7_night , buf(6,1))
+        ZONEGROUP7tree:add(f_zone7_day   , buf(6,1))
+        local ZONEGROUP6tree = ZONEGROUP58tree:add(f_zone6_groups , buf(6,1))
+        ZONEGROUP6tree:add(f_zone6_night , buf(6,1))
+        ZONEGROUP6tree:add(f_zone6_day   , buf(6,1))
+        local ZONEGROUP5tree = ZONEGROUP58tree:add(f_zone5_groups , buf(6,1))
+        ZONEGROUP5tree:add(f_zone5_night , buf(6,1))
+        ZONEGROUP5tree:add(f_zone5_day   , buf(6,1))
         -- byte 7
         CONFIGtree:add(f_unk35 , buf(7,1))
 
