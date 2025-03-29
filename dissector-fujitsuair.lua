@@ -25,7 +25,8 @@ local packettype = {
     [2] = "FEATURES",
     [3] = "FUNCTION",
     [4] = "STATUS",
-    [5] = "ZONE CONFIG"
+    [5] = "ZONE CONFIG",
+    [6] = "ZONE FUNCTION"
 }
 
 local addrtype = {
@@ -41,11 +42,13 @@ local f_unk0                 = ProtoField.uint8 ("fujitsuair.unknown0"          
 local f_src_type             = ProtoField.uint8 ("fujitsuair.src_type"                  , "Source Type"            , base.DEC, addrtype   , 0x20) -- ALL
 local f_unk16                = ProtoField.uint8 ("fujitsuair.unknown16"                 , "Unknown"                , base.DEC, nil        , 0x10) -- ALL
 local f_src                  = ProtoField.uint8 ("fujitsuair.src"                       , "Source"                 , base.DEC, nil        , 0x0F) -- ALL
+
 -- byte 1
 local f_unk1                 = ProtoField.uint8 ("fujitsuair.unknown1"                  , "Unknown"                , base.DEC, nil        , 0xC0) -- ALL
 local f_token_dst_type       = ProtoField.uint8 ("fujitsuair.token_dst_type"            , "Token Destination Type" , base.DEC, addrtype   , 0x20) -- ALL
 local f_unk18                = ProtoField.uint8 ("fujitsuair.unknown17"                 , "Unknown"                , base.DEC, nil        , 0x10) -- ALL
 local f_token_dst            = ProtoField.uint8 ("fujitsuair.token_dst"                 , "Token Destination"      , base.DEC, nil        , 0x0F) -- ALL
+
 -- byte 2
 local f_unk2                 = ProtoField.uint8 ("fujitsuair.unknown2"                  , "Unknown"                , base.DEC, nil        , 0x80) -- ALL -- not part of type field
 local f_type                 = ProtoField.uint8 ("fujitsuair.type"                      , "Type"                   , base.DEC, packettype , 0x70) -- ALL
@@ -53,6 +56,8 @@ local f_standby              = ProtoField.bool  ("fujitsuair.standby"           
 local f_write                = ProtoField.bool  ("fujitsuair.write"                     , "Write"                  ,        8, nil        , 0x08) -- RC CONFIG, RC FUNCTION
 local f_unk3                 = ProtoField.uint8 ("fujitsuair.unknown3"                  , "Unknown"                , base.DEC, nil        , 0x07) -- CONFIG, RC FUNCTION -- RC does not consume CONFIG packets if 0x01 or 0x02 are set
 local f_unk26                = ProtoField.uint8 ("fujitsuair.unknown26"                 , "Unknown"                , base.DEC, nil        , 0x0F) -- IU STATUS, RC FEATURES, RC ERROR
+local f_zone_common          = ProtoField.bool  ("fujitsuair.zone_common"               , "Zone Common"            ,        8, nil        , 0x08) -- IU ZONE FUNCTION
+
 -- byte 3
 local f_unk21                = ProtoField.uint8 ("fujitsuair.unknown21"                 , "Unknown"                , base.DEC, nil        , 0xE0) -- IU FEATURES
 local f_f_mode_auto          = ProtoField.bool  ("fujitsuair.feature.mode_auto"         , "Mode Auto"              ,        8, nil        , 0x10) -- IU FEATURES
@@ -69,15 +74,17 @@ local f_enabled              = ProtoField.bool  ("fujitsuair.enabled"           
 local f_unk13                = ProtoField.uint8 ("fujitsuair.unknown13"                 , "Unknown"                , base.DEC, nil      , 0xFF) -- FUNCTION
 local f_unk27                = ProtoField.bool  ("fujitsuair.unknown27"                 , "Unknown"                ,        8, nil      , 0x80) -- IU STATUS -- false in first after power on, true thereafter
 local f_unk28                = ProtoField.uint8 ("fujitsuair.unknown28"                 , "Unknown"                , base.DEC, nil      , 0x7F) -- IU STATUS
-local f_zones                = ProtoField.uint8 ("fujitsuair.zones"                     , "Active Zones"           , base.HEX, nil      , 0xFF) -- RC ZONE CONFIG
-local f_zone8                = ProtoField.bool  ("fujitsuair.zones.8"                   , "Zone 8"                 ,        8, nil      , 0x80) -- RC ZONE CONFIG
-local f_zone7                = ProtoField.bool  ("fujitsuair.zones.7"                   , "Zone 7"                 ,        8, nil      , 0x40) -- RC ZONE CONFIG
-local f_zone6                = ProtoField.bool  ("fujitsuair.zones.6"                   , "Zone 6"                 ,        8, nil      , 0x20) -- RC ZONE CONFIG
-local f_zone5                = ProtoField.bool  ("fujitsuair.zones.5"                   , "Zone 5"                 ,        8, nil      , 0x10) -- RC ZONE CONFIG
-local f_zone4                = ProtoField.bool  ("fujitsuair.zones.4"                   , "Zone 4"                 ,        8, nil      , 0x08) -- RC ZONE CONFIG
-local f_zone3                = ProtoField.bool  ("fujitsuair.zones.3"                   , "Zone 3"                 ,        8, nil      , 0x04) -- RC ZONE CONFIG
-local f_zone2                = ProtoField.bool  ("fujitsuair.zones.2"                   , "Zone 2"                 ,        8, nil      , 0x02) -- RC ZONE CONFIG
-local f_zone1                = ProtoField.bool  ("fujitsuair.zones.1"                   , "Zone 1"                 ,        8, nil      , 0x01) -- RC ZONE CONFIG
+local f_zones                = ProtoField.uint8 ("fujitsuair.zones"                     , "Active Zones"           , base.HEX, nil      , 0xFF) -- ZONE CONFIG / IU ZONE FUNCTION
+local f_zone8                = ProtoField.bool  ("fujitsuair.zones.8"                   , "Zone 8"                 ,        8, nil      , 0x80) -- ZONE CONFIG / IU ZONE FUNCTION
+local f_zone7                = ProtoField.bool  ("fujitsuair.zones.7"                   , "Zone 7"                 ,        8, nil      , 0x40) -- ZONE CONFIG / IU ZONE FUNCTION
+local f_zone6                = ProtoField.bool  ("fujitsuair.zones.6"                   , "Zone 6"                 ,        8, nil      , 0x20) -- ZONE CONFIG / IU ZONE FUNCTION
+local f_zone5                = ProtoField.bool  ("fujitsuair.zones.5"                   , "Zone 5"                 ,        8, nil      , 0x10) -- ZONE CONFIG / IU ZONE FUNCTION
+local f_zone4                = ProtoField.bool  ("fujitsuair.zones.4"                   , "Zone 4"                 ,        8, nil      , 0x08) -- ZONE CONFIG / IU ZONE FUNCTION
+local f_zone3                = ProtoField.bool  ("fujitsuair.zones.3"                   , "Zone 3"                 ,        8, nil      , 0x04) -- ZONE CONFIG / IU ZONE FUNCTION
+local f_zone2                = ProtoField.bool  ("fujitsuair.zones.2"                   , "Zone 2"                 ,        8, nil      , 0x02) -- ZONE CONFIG / IU ZONE FUNCTION
+local f_zone1                = ProtoField.bool  ("fujitsuair.zones.1"                   , "Zone 1"                 ,        8, nil      , 0x01) -- ZONE CONFIG / IU ZONE FUNCTION
+local f_unk36                = ProtoField.uint8 ("fujitsuair.unknown36"                 , "Unknown"                , base.HEX, nil      , 0xFF) -- ZONE FEATURE
+
 -- byte 4
 local f_unk5                 = ProtoField.uint8 ("fujitsuair.unknown5"                  , "Unknown"                , base.DEC, nil , 0xE0) -- IU FEATURES
 local f_f_fan_quiet          = ProtoField.bool  ("fujitsuair.feature.fan_quiet"         , "Fan Quiet"              ,        8, nil , 0x10) -- IU FEATURES
@@ -93,7 +100,14 @@ local f_unk6                 = ProtoField.uint8 ("fujitsuair.unknown6"          
 local f_temp                 = ProtoField.uint8 ("fujitsuair.temperature_setpoint"      , "Temperature Setpoint"   , bit.bor(base.DEC, base.UNIT_STRING), {"°C"}, 0x1F) -- CONFIG -- celcius 16C (0x10) - 30C (0x1E) valid?
 local f_function             = ProtoField.uint8 ("fujitsuair.function"                  , "Function"               , base.DEC, nil , 0xFF) -- FUNCTION -- maybe 7 bits? function #99 (0x63) appears to be maximum
 local f_unk29                = ProtoField.uint8 ("fujitsuair.unknown29"                 , "Unknown"                , base.DEC, nil , 0xFF) -- IU STATUS -- seen values 0,1,2,3, 6,7,8,9
-local f_unk32                = ProtoField.uint8 ("fujitsuair.unknown33"                 , "Unknown"                , base.DEC, nil , 0xFF) -- RC ZONE CONFIG
+local f_unk33                = ProtoField.bool  ("fujitsuair.unknown33"                 , "Unknown"                ,        8, nil , 0x80) -- ZONE CONFIG -- seen bit set when source is indoor unit, otherwise 0
+local f_unk32                = ProtoField.uint8 ("fujitsuair.unknown32"                 , "Unknown"                , base.DEC, nil , 0x67) -- ZONE CONFIG
+local f_zone_groups          = ProtoField.uint8 ("fujitsuair.zones_groups"              , "Active Zone Groups"     , base.HEX, nil , 0x18) -- ZONE CONFIG -- Group 'all' enables both night + day
+local f_zone_group_night     = ProtoField.bool  ("fujitsuair.zone_groups.night"         , "Zone Group - Night"     ,        8, nil , 0x10) -- ZONE CONFIG
+local f_zone_group_day       = ProtoField.bool  ("fujitsuair.zone_groups.day"           , "Zone Group - Day"       ,        8, nil , 0x08) -- ZONE CONFIG
+local f_unk34                = ProtoField.uint8 ("fujitsuair.unknown34"                 , "Unknown"                , base.HEX, nil , 0xFF) -- ZONE FEATURE
+
+
 -- byte 5
 local f_f_filter_timer       = ProtoField.bool  ("fujitsuair.feature.filter_timer"      , "Filter Timer"           ,        8, nil , 0x80) -- IU FEATURES
 local f_f_sensor_switching   = ProtoField.bool  ("fujitsuair.feature.sensor_switching"  , "Sensor Switching"       ,        8, nil , 0x40) -- IU FEATURES
@@ -115,7 +129,18 @@ local f_set_vertical_louver  = ProtoField.bool  ("fujitsuair.set_vertical_louver
 local f_unk9                 = ProtoField.uint8 ("fujitsuair.unknown9"                  , "Unknown"                , base.DEC, nil , 0x01) -- RC CONFIG
 local f_funcval              = ProtoField.uint8 ("fujitsuair.function_value"            , "Function Value"         , base.DEC, nil , 0xFF) -- FUNCTION
 local f_unk30                = ProtoField.uint8 ("fujitsuair.unknown30"                 , "Unknown"                , base.DEC, nil , 0xFF) -- IU STATUS -- seen values 0x00, 0x16
-local f_unk33                = ProtoField.uint8 ("fujitsuair.unknown34"                 , "Unknown"                , base.DEC, nil , 0xFF) -- RC ZONE CONFIG
+local f_zone_grouping_1_4    = ProtoField.uint8 ("fujitsuair.zone_grouping_1_4"         , "Zone Group Assoc 1-4"   , base.HEX, nil , 0xFF) -- ZONE CONFIG
+local f_zone4_night          = ProtoField.bool  ("fujitsuair.zone_grouping_1_4.4.night" , "Zone 4 - Night"         ,        8, nil , 0x80) -- ZONE CONFIG
+local f_zone4_day            = ProtoField.bool  ("fujitsuair.zone_grouping_1_4.4.day"   , "Zone 4 - Day"           ,        8, nil , 0x40) -- ZONE CONFIG
+local f_zone3_night          = ProtoField.bool  ("fujitsuair.zone_grouping_1_4.3.night" , "Zone 3 - Night"         ,        8, nil , 0x20) -- ZONE CONFIG
+local f_zone3_day            = ProtoField.bool  ("fujitsuair.zone_grouping_1_4.3.day"   , "Zone 3 - Day"           ,        8, nil , 0x10) -- ZONE CONFIG
+local f_zone2_night          = ProtoField.bool  ("fujitsuair.zone_grouping_1_4.2.night" , "Zone 2 - Night"         ,        8, nil , 0x08) -- ZONE CONFIG
+local f_zone2_day            = ProtoField.bool  ("fujitsuair.zone_grouping_1_4.2.day"   , "Zone 2 - Day"           ,        8, nil , 0x04) -- ZONE CONFIG
+local f_zone1_night          = ProtoField.bool  ("fujitsuair.zone_grouping_1_4.1.night" , "Zone 1 - Night"         ,        8, nil , 0x02) -- ZONE CONFIG
+local f_zone1_day            = ProtoField.bool  ("fujitsuair.zone_grouping_1_4.1.day"   , "Zone 1 - Day"           ,        8, nil , 0x01) -- ZONE CONFIG
+local f_zone_func_write      = ProtoField.bool  ("fujitsuair.zone_func_write"           , "Zone Function Write"    ,        8, nil , 0x80) -- ZONE FUNCTION
+
+
 -- byte 6
 local f_unk10                = ProtoField.uint8 ("fujitsuair.unknown10"                 , "Unknown"                , base.DEC, nil , 0xFF) -- IU FEATURES
 local f_lock_filter_reset    = ProtoField.bool  ("fujitsuair.lock.filter_reset"         , "Lock Filter Reset"      ,        8, nil , 0x80) -- IU CONFIG
@@ -131,7 +156,17 @@ local f_unk11                = ProtoField.uint8 ("fujitsuair.unknown11"         
 local f_controller_temp      = ProtoField.float ("fujitsuair.controller_temp"           , "Controller Temperature" ,           {"°C"}    ) -- RC CONFIG -- temperature range reported by controller is 0C - 60C in 0.5 degree increments
 local f_unk14                = ProtoField.uint8 ("fujitsuair.unknown14"                 , "Unknown"                , base.DEC, nil , 0xFF) -- FUNCTION
 local f_unk31                = ProtoField.uint8 ("fujitsuair.unknown31"                 , "Unknown"                , base.DEC, nil , 0xFF) -- IU STATUS -- seen values 0x00, 0x01 -- 0x01 heat running?
-local f_unk34                = ProtoField.uint8 ("fujitsuair.unknown35"                 , "Unknown"                , base.DEC, nil , 0xFF) -- RC ZONE CONFIG
+local f_zone_grouping_5_8    = ProtoField.uint8 ("fujitsuair.zone_grouping_5_8"         , "Zone Group Assoc 5-8"   , base.HEX, nil , 0xFF) -- ZONE CONFIG
+local f_zone8_night          = ProtoField.bool  ("fujitsuair.zone_grouping_5_8.8.night" , "Zone 8 - Night"         ,        8, nil , 0x80) -- ZONE CONFIG
+local f_zone8_day            = ProtoField.bool  ("fujitsuair.zone_grouping_5_8.8.day"   , "Zone 8 - Day"           ,        8, nil , 0x40) -- ZONE CONFIG
+local f_zone7_night          = ProtoField.bool  ("fujitsuair.zone_grouping_5_8.7.night" , "Zone 7 - Night"         ,        8, nil , 0x20) -- ZONE CONFIG
+local f_zone7_day            = ProtoField.bool  ("fujitsuair.zone_grouping_5_8.7.day"   , "Zone 7 - Day"           ,        8, nil , 0x10) -- ZONE CONFIG
+local f_zone6_night          = ProtoField.bool  ("fujitsuair.zone_grouping_5_8.6.night" , "Zone 6 - Night"         ,        8, nil , 0x08) -- ZONE CONFIG
+local f_zone6_day            = ProtoField.bool  ("fujitsuair.zone_grouping_5_8.6.day"   , "Zone 6 - Day"           ,        8, nil , 0x04) -- ZONE CONFIG
+local f_zone5_night          = ProtoField.bool  ("fujitsuair.zone_grouping_5_8.5.night" , "Zone 5 - Night"         ,        8, nil , 0x02) -- ZONE CONFIG
+local f_zone5_day            = ProtoField.bool  ("fujitsuair.zone_grouping_5_8.5.day"   , "Zone 5 - Day"           ,        8, nil , 0x01) -- ZONE CONFIG
+local f_zone_func_location   = ProtoField.uint8 ("fujitsuair.zone_func_loction"         , "Zone Function Location" , base.HEX, nil , 0xFF) -- ZONE FUNCTION -- 0x0B thru 0x13 show the outlet count for zones 1-8 + common
+
 -- byte 7
 local f_unk12                = ProtoField.uint8 ("fujitsuair.unknown12"                 , "Unknown"                , base.DEC, nil , 0xFF) -- IU FEATURES
 local f_unk22                = ProtoField.uint8 ("fujitsuair.unknown22"                 , "Unknown"                , base.DEC, nil , 0x80) -- CONFIG
@@ -142,7 +177,8 @@ local f_unk19                = ProtoField.uint8 ("fujitsuair.unknown19"         
 local f_unk23                = ProtoField.uint8 ("fujitsuair.unknown23"                 , "Unknown"                , base.DEC, nil , 0x1F) -- RC CONFIG
 local f_unk15                = ProtoField.uint8 ("fujitsuair.unknown15"                 , "Unknown"                , base.DEC, nil , 0xF0) -- FUNCTION
 local f_indoorunit           = ProtoField.uint8 ("fujitsuair.indoorunit"                , "Indoor Unit"            , base.DEC, nil , 0x0F) -- FUNCTION -- maybe ALL?
-local f_unk35                = ProtoField.uint8 ("fujitsuair.unknown36"                 , "Unknown"                , base.DEC, nil , 0xFF) -- RC ZONE CONFIG
+local f_unk35                = ProtoField.uint8 ("fujitsuair.unknown35"                 , "Unknown"                , base.DEC, nil , 0xFF) -- RC ZONE CONFIG
+local f_zone_func_value      = ProtoField.uint8 ("fujitsuair.zone_func_value"           , "Zone Function Value"    , base.HEX, nil , 0xFF) -- ZONE FUNCTION
 
 -- oil recovery, defrost MAY be different flags from standby although controller displays same symbol for all.
 -- maybe missing powerful, min heat, power diffuser, sleep, coil dry, but may not be available over this protocol, only over built in IR controllers...
@@ -155,27 +191,35 @@ p_fujitsuair.fields = {
     f_unk0, f_src_type, f_unk16, f_src,                                       -- byte 0
     f_unk1, f_token_dst_type, f_unk18, f_token_dst,                           -- byte 1
     f_unk2, f_type, f_standby, f_write, f_unk3, f_unk26,                      -- byte 2
+    f_zone_common,                                                            -- byte 2
     f_f_mode_auto, f_f_mode_heat, f_f_mode_fan, f_f_mode_dry, f_f_mode_cool,  -- byte 3
     f_unk21, f_unk4, f_error, f_fan, f_mode, f_enabled, f_unk13,              -- byte 3
     f_unk27, f_unk28,                                                         -- byte 3
     f_zones,                                                                  -- byte 3
     f_zone8, f_zone7, f_zone6, f_zone5, f_zone4, f_zone3, f_zone2, f_zone1,   -- byte 3
+    f_unk36,                                                                  -- byte 3
     f_f_fan_quiet, f_f_fan_low, f_f_fan_medium, f_f_fan_high, f_f_fan_auto,   -- byte 4
     f_unk5, f_unk6, f_errcode, f_eco, f_testrun, f_temp, f_function, f_unk29, -- byte 4
-    f_unk32,                                                                  -- byte 4
+    f_unk33, f_unk32, f_zone_groups, f_zone_group_night, f_zone_group_day,    -- byte 4
+    f_unk34,                                                                  -- byte 4
     f_f_filter_timer, f_f_sensor_switching, f_unk17, f_f_maintenance_button,  -- byte 5
     f_f_economy_mode, f_f_swing_horizontal, f_f_swing_vertical,               -- byte 5
     f_unk7, f_unk24, f_unk25,                                                 -- byte 5
     f_controller_sensor, f_unk8, f_swing_horizontal, f_set_horizontal_louver, -- byte 5
     f_swing_vertical, f_set_vertical_louver, f_unk9, f_funcval, f_unk30,      -- byte 5
-    f_unk33,                                                                  -- byte 5
+    f_zone_grouping_1_4, f_zone4_night, f_zone4_day, f_zone3_night,
+    f_zone3_day, f_zone2_night, f_zone2_day, f_zone1_night, f_zone1_day,      -- byte 5
+    f_zone_func_write,                                                        -- byte 5
     f_unk10, f_lock_filter_reset, f_lock_on_off, f_lock_mode, f_lock_unknown, -- byte 6
     f_lock_timer, f_lock_all, f_seen_secondary_rc, f_seen_primary_rc,         -- byte 6
     f_unk11, f_controller_temp, f_unk14, f_unk31,                             -- byte 6
-    f_unk34,                                                                  -- byte 6
+    f_zone_grouping_5_8, f_zone8_night, f_zone8_day, f_zone7_night,
+    f_zone7_day, f_zone6_night, f_zone6_day, f_zone5_night, f_zone5_day,      -- byte 6
+    f_zone_func_location,                                                     -- byte 6
     f_unk12, f_unk22, f_filter_timer, f_reset_filter_timer, f_maintenance,    -- byte 7
     f_unk19, f_unk23, f_unk15, f_indoorunit,                                  -- byte 7
-    f_unk35                                                                   -- byte 7
+    f_unk35,                                                                  -- byte 7
+    f_zone_func_value                                                         -- byte 7
 }
 
 local frame_number = Field.new("frame.number")
@@ -253,7 +297,7 @@ function p_fujitsuair.dissector(buf, pinfo, tree)
             subtree:add(f_unk26   , buf(2,1))
         end
     else -- REMOTE
-        if ptype == 0 or ptype == 3 then -- CONFIG, FUNCTION
+        if ptype == 0 or ptype == 3 or ptype == 5 then -- CONFIG, FUNCTION, ZONE CONFIG
             subtree:add(f_write , buf(2,1))
             subtree:add(f_unk3  , buf(2,1))
         else
@@ -380,7 +424,7 @@ function p_fujitsuair.dissector(buf, pinfo, tree)
         subtree:add(f_unk31 , buf(6,1))
 
         used = used + 4
-    elseif ptype == 5 and srctype == 1 then -- ZONE CONFIG ???
+    elseif ptype == 5 then -- ZONE CONFIG
         local CONFIGtree = subtree:add("", "ZONE CONFIG")
         -- byte 3
         local ZONEtree = CONFIGtree:add(f_zones , buf(3,1))
@@ -393,13 +437,61 @@ function p_fujitsuair.dissector(buf, pinfo, tree)
         ZONEtree:add(f_zone2 , buf(3,1))
         ZONEtree:add(f_zone1 , buf(3,1))
         -- byte 4
+        CONFIGtree:add(f_unk33 , buf(4,1))
         CONFIGtree:add(f_unk32 , buf(4,1))
+        local ZONEGROUPStree = CONFIGtree:add(f_zone_groups , buf(4,1))
+        ZONEGROUPStree:add(f_zone_group_night , buf(4,1))
+        ZONEGROUPStree:add(f_zone_group_day   , buf(4,1))
         -- byte 5
-        CONFIGtree:add(f_unk33 , buf(5,1))
+        local ZONEGROUP1tree = CONFIGtree:add(f_zone_grouping_1_4 , buf(5,1))
+        ZONEGROUP1tree:add(f_zone4_night , buf(5,1))
+        ZONEGROUP1tree:add(f_zone4_day   , buf(5,1))
+        ZONEGROUP1tree:add(f_zone3_night , buf(5,1))
+        ZONEGROUP1tree:add(f_zone3_day   , buf(5,1))
+        ZONEGROUP1tree:add(f_zone2_night , buf(5,1))
+        ZONEGROUP1tree:add(f_zone2_day   , buf(5,1))
+        ZONEGROUP1tree:add(f_zone1_night , buf(5,1))
+        ZONEGROUP1tree:add(f_zone1_day   , buf(5,1))
         -- byte 6
-        CONFIGtree:add(f_unk34 , buf(6,1))
+        local ZONEGROUP2tree = CONFIGtree:add(f_zone_grouping_5_8 , buf(6,1))
+        ZONEGROUP2tree:add(f_zone8_night , buf(6,1))
+        ZONEGROUP2tree:add(f_zone8_day   , buf(6,1))
+        ZONEGROUP2tree:add(f_zone7_night , buf(6,1))
+        ZONEGROUP2tree:add(f_zone7_day   , buf(6,1))
+        ZONEGROUP2tree:add(f_zone6_night , buf(6,1))
+        ZONEGROUP2tree:add(f_zone6_day   , buf(6,1))
+        ZONEGROUP2tree:add(f_zone5_night , buf(6,1))
+        ZONEGROUP2tree:add(f_zone5_day   , buf(6,1))
         -- byte 7
         CONFIGtree:add(f_unk35 , buf(7,1))
+
+        used = used + 5
+    elseif ptype == 6 then -- ZONE FUNCTION (IU ACKs)
+        local CONFIGtree = subtree:add("", "ZONE FUNCTION")
+        if srctype == 0 then
+            -- byte 2
+            CONFIGtree:add(f_zone_common , buf(2,1))
+            -- byte 3
+            local ZONEtree = CONFIGtree:add(f_zones , buf(3,1))
+            ZONEtree:add(f_zone8 , buf(3,1))
+            ZONEtree:add(f_zone7 , buf(3,1))
+            ZONEtree:add(f_zone6 , buf(3,1))
+            ZONEtree:add(f_zone5 , buf(3,1))
+            ZONEtree:add(f_zone4 , buf(3,1))
+            ZONEtree:add(f_zone3 , buf(3,1))
+            ZONEtree:add(f_zone2 , buf(3,1))
+            ZONEtree:add(f_zone1 , buf(3,1))
+        else
+            CONFIGtree:add(f_unk36 , buf(3,1))
+        end
+        -- byte 4
+        CONFIGtree:add(f_unk34              , buf(4,1))
+        -- byte 5
+        CONFIGtree:add(f_zone_func_write    , buf(5,1))
+        -- byte 6
+        CONFIGtree:add(f_zone_func_location , buf(6,1))
+        -- byte 7
+        CONFIGtree:add(f_zone_func_value    , buf(7,1))
 
         used = used + 5
     end
