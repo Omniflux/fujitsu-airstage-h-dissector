@@ -153,8 +153,9 @@ local f_zone1_groups         = ProtoField.uint8 ("fujitsuair.zone_grouping_1_4.1
 local f_zone1_night          = ProtoField.bool  ("fujitsuair.zone_grouping_1_4.1.night" , "Zone 1 - Night"         ,        8,       nil , 0x02) -- ZONE CONFIG
 local f_zone1_day            = ProtoField.bool  ("fujitsuair.zone_grouping_1_4.1.day"   , "Zone 1 - Day"           ,        8,       nil , 0x01) -- ZONE CONFIG
 
-local f_zone_func_write      = ProtoField.bool  ("fujitsuair.zone_func_write"           , "Zone Function Write"    ,        8, nil , 0x80) -- ZONE FUNCTION
-local f_unk38                = ProtoField.uint8 ("fujitsuair.unknown38"                 , "Unknown"                , base.DEC, nil , 0x7F) -- ZONE FUNCTION
+local f_zone_func_write      = ProtoField.bool  ("fujitsuair.zone_func_write"           , "Zone Function Write"    ,        8, nil , 0x80) -- RC ZONE FUNCTION
+local f_unk38                = ProtoField.uint8 ("fujitsuair.unknown38"                 , "Unknown"                , base.DEC, nil , 0x7F) -- RC ZONE FUNCTION
+local f_unk39                = ProtoField.uint8 ("fujitsuair.unknown39"                 , "Unknown"                , base.DEC, nil , 0xFF) -- IU ZONE FUNCTION
 
 
 -- byte 6
@@ -233,7 +234,7 @@ p_fujitsuair.fields = {
     f_unk7, f_unk24, f_unk25,                                                 -- byte 5
     f_controller_sensor, f_unk8, f_swing_horizontal, f_set_horizontal_louver, -- byte 5
     f_swing_vertical, f_set_vertical_louver, f_unk9, f_funcval, f_unk30,      -- byte 5
-    f_zone_grouping_1_4, f_zone_func_write, f_unk38,                          -- byte 5
+    f_zone_grouping_1_4, f_zone_func_write, f_unk38, f_unk39,                 -- byte 5
     f_zone4_groups, f_zone4_night, f_zone4_day,                               -- byte 5
     f_zone3_groups, f_zone3_night, f_zone3_day,                               -- byte 5
     f_zone2_groups, f_zone2_night, f_zone2_day,                               -- byte 5
@@ -528,8 +529,12 @@ function p_fujitsuair.dissector(buf, pinfo, tree)
         -- byte 4
         CONFIGtree:add(f_unk34              , buf(4,1))
         -- byte 5
-        CONFIGtree:add(f_zone_func_write    , buf(5,1))
-        CONFIGtree:add(f_unk38              , buf(5,1))
+        if srctype == 0 then -- INDOOR UNIT
+            CONFIGtree:add(f_unk39              , buf(5,1))
+        else -- REMOTE
+            CONFIGtree:add(f_zone_func_write    , buf(5,1))
+            CONFIGtree:add(f_unk38              , buf(5,1))
+        end
         -- byte 6
         CONFIGtree:add(f_zone_func_location , buf(6,1))
         -- byte 7
