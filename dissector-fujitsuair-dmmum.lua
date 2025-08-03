@@ -196,7 +196,7 @@ function p_fujitsuair_dmmum.dissector(buf, pinfo, tree)
     -- byte 2
     subtree:add(f_unk6    , buf(2,1))
     -- byte 3
-    if srctype == 4 then -- OUTDOOR UNIT
+    if srctype == 1 or srctype == 3 then -- OUTDOOR UNIT
         -- Decoded with a UTY-DMMUM which is documented to support up to 5 units,
         -- but appears to support 6. UTY-DMMYM and UTY-DMMGM support up to 8 units,
         -- so this may shift, or last two may be out of order...or previous byte...
@@ -220,7 +220,7 @@ function p_fujitsuair_dmmum.dissector(buf, pinfo, tree)
         UNITtree:add(f_rc_unit1, buf(3,1))
     end
     -- byte 4
-    if srctype == 4 then -- OUTDOOR UNIT
+    if srctype == 1 or srctype == 3  then -- OUTDOOR UNIT
         subtree:add(f_ou_unk10, buf(4,1)) -- I have seen a marketing image of a controller with 9 units displayed on screen. Could be this bit...
         subtree:add(f_ou_unit , buf(4,1))
         subtree:add(f_ou_unk11, buf(4,1))
@@ -230,7 +230,7 @@ function p_fujitsuair_dmmum.dissector(buf, pinfo, tree)
         subtree:add(f_rc_unk9   , buf(4,1))
     end
     -- byte 5
-    if srctype == 4 then -- OUTDOOR UNIT
+    if srctype == 1 or srctype == 3  then -- OUTDOOR UNIT
         subtree:add(f_ou_fan    , buf(5,1))
         subtree:add(f_ou_mode   , buf(5,1))
         subtree:add(f_ou_enabled, buf(5,1))
@@ -240,7 +240,7 @@ function p_fujitsuair_dmmum.dissector(buf, pinfo, tree)
         subtree:add(f_rc_fan , buf(5,1))
     end
     -- byte 6
-    if srctype == 4 then -- OUTDOOR UNIT
+    if srctype == 1 or srctype == 3  then -- OUTDOOR UNIT
         subtree:add(f_ou_min_heat , buf(6,1))
         subtree:add(f_ou_low_noise, buf(6,1))
         subtree:add(f_ou_eco      , buf(6,1))
@@ -252,7 +252,7 @@ function p_fujitsuair_dmmum.dissector(buf, pinfo, tree)
         subtree:add(f_rc_eco        , buf(6,1))
     end
     -- byte 7
-    if srctype == 4 then -- OUTDOOR UNIT
+    if srctype == 1 or srctype == 3  then -- OUTDOOR UNIT
         subtree:add(f_ou_unk15      , buf(7,1))
         subtree:add(f_ou_restricted , buf(7,1))
         subtree:add(f_ou_error      , buf(7,1))
