@@ -11,3 +11,4 @@
 | 1741424959 | System initialisation with zone controller |
 | 1741430635 | Zone controller programming flow |
 | 1741433307 | Zone interations from controller |
+| 1756220383 | Indor unit without features support |

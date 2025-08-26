@@ -206,6 +206,7 @@ local f_zone_func_value      = ProtoField.uint8 ("fujitsuair.zone_func_value"   
 -- oil recovery, defrost MAY be different flags from standby although controller displays same symbol for all.
 -- maybe missing powerful, min heat, power diffuser, sleep, coil dry, but may not be available over this protocol, only over built in IR controllers...
 
+-- IU0 -> C0 unknown7 is usually 101, but is 010 on old unit pre FEATURE support
 -- IU0 -> C0 unknown7 switches from 101 to 010 on eco on/off, then back to 101 on next packet
 -- IU0 -> C0 unknown7 switches from 101 to 000 on min heat on/off, then back to 101 on next packet
 
