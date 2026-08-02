@@ -74,7 +74,8 @@ local f_f_mode_fan           = ProtoField.bool  ("fujitsuair.feature.mode_fan"  
 local f_f_mode_dry           = ProtoField.bool  ("fujitsuair.feature.mode_dry"          , "Mode Dry"               ,        8, nil        , 0x02) -- IU FEATURES
 local f_f_mode_cool          = ProtoField.bool  ("fujitsuair.feature.mode_cool"         , "Mode Cool"              ,        8, nil        , 0x01) -- IU FEATURES
 
-local f_unk4                 = ProtoField.uint8 ("fujitsuair.unknown4"                  , "Unknown"                , base.DEC, nil      , 0xFF) -- ERROR
+local f_errcode_ext          = ProtoField.uint8 ("fujitsuair.errcode_extended"          , "Error Code Extended"    , base.DEC, nil      , 0xF0) -- IU ERROR
+local f_unk4                 = ProtoField.uint8 ("fujitsuair.unknown4"                  , "Unknown"                , base.DEC, nil      , 0x0F) -- ERROR
 local f_error                = ProtoField.bool  ("fujitsuair.error"                     , "Error"                  ,        8, nil      , 0x80) -- CONFIG
 local f_fan                  = ProtoField.uint8 ("fujitsuair.fan"                       , "Fan"                    , base.DEC, fanlevel , 0x70) -- CONFIG
 local f_mode                 = ProtoField.uint8 ("fujitsuair.mode"                      , "Mode"                   , base.DEC, opmode   , 0x0E) -- CONFIG
@@ -101,7 +102,8 @@ local f_f_fan_medium         = ProtoField.bool  ("fujitsuair.feature.fan_medium"
 local f_f_fan_high           = ProtoField.bool  ("fujitsuair.feature.fan_high"          , "Fan High"               ,        8, nil , 0x02) -- IU FEATURES
 local f_f_fan_auto           = ProtoField.bool  ("fujitsuair.feature.fan_auto"          , "Fan Auto"               ,        8, nil , 0x01) -- IU FEATURES
 
-local f_errcode              = ProtoField.uint8 ("fujitsuair.errcode"                   , "Error Code"             , base.HEX)             -- IU ERROR
+local f_errcode_base         = ProtoField.uint8 ("fujitsuair.errcode_base"              , "Error Code Base"        , base.HEX, nil , 0xFF) -- IU ERROR
+local f_errcode              = ProtoField.string ("fujitsuair.errcode"                  , "Error Code"             , base.ASCII)           -- IU ERROR
 local f_eco                  = ProtoField.bool  ("fujitsuair.eco"                       , "Economy Mode"           ,        8, nil , 0x80) -- CONFIG
 local f_testrun              = ProtoField.bool  ("fujitsuair.testrun"                   , "Test Run"               ,        8, nil , 0x40) -- CONFIG
 local f_unk6                 = ProtoField.uint8 ("fujitsuair.unknown6"                  , "Unknown"                , base.DEC, nil , 0x20) -- CONFIG -- another bit for temperature? sign bit?
@@ -221,14 +223,14 @@ p_fujitsuair.fields = {
     f_zone_common, f_unk20,                                                   -- byte 2
 
     f_f_mode_auto, f_f_mode_heat, f_f_mode_fan, f_f_mode_dry, f_f_mode_cool,  -- byte 3
-    f_unk21, f_unk4, f_error, f_fan, f_mode, f_enabled, f_unk13,              -- byte 3
-    f_unk27, f_unk28, f_unk36, f_zones,                                       -- byte 3
+    f_unk21, f_unk4, f_errcode_ext, f_error, f_fan, f_mode, f_enabled,        -- byte 3
+    f_unk13, f_unk27, f_unk28, f_unk36, f_zones,                              -- byte 3
     f_zone8, f_zone7, f_zone6, f_zone5, f_zone4, f_zone3, f_zone2, f_zone1,   -- byte 3
 
     f_f_fan_quiet, f_f_fan_low, f_f_fan_medium, f_f_fan_high, f_f_fan_auto,   -- byte 4
-    f_unk5, f_unk6, f_errcode, f_eco, f_testrun, f_temp, f_function, f_unk29, -- byte 4
-    f_unk33, f_unk32, f_zone_groups, f_zone_group_night, f_zone_group_day,    -- byte 4
-    f_unk34, f_unk37,                                                         -- byte 4
+    f_unk5, f_unk6, f_errcode_base, f_errcode, f_eco, f_testrun, f_temp,      -- byte 4
+    f_function, f_unk29, f_unk33, f_unk32, f_zone_groups, f_zone_group_night, -- byte 4
+    f_zone_group_day, f_unk34, f_unk37,                                       -- byte 4
 
     f_f_filter_timer, f_f_sensor_switching, f_unk17, f_f_maintenance_button,  -- byte 5
     f_f_economy_mode, f_f_swing_horizontal, f_f_swing_vertical,               -- byte 5
@@ -396,10 +398,21 @@ function p_fujitsuair.dissector(buf, pinfo, tree)
 
         used = used + 5
     elseif ptype == 1 and srctype == 0 then -- INDOOR UNIT ERROR
+        local errcode = buf(4,1):bytes():tohex()
+        local errcode_ext = buf(3,1):bitfield(0,4)
+        if errcode_ext ~= 0 then
+          errcode = errcode .. string.format(".%u", errcode_ext)
+        end
+        if errcode:sub(1, 1) == "D" then
+          errcode = "J" .. errcode:sub(2)
+        end
         -- byte 3
-        subtree:add(f_unk4    , buf(3,1))
+        subtree:add(f_errcode_ext , buf(3,1))
+        subtree:add(f_unk4        , buf(3,1))
         -- byte 4
-        subtree:add(f_errcode , buf(4,1))
+        subtree:add(f_errcode_base , buf(4,1))
+        -- combined
+        subtree:add(f_errcode      , errcode)
 
         used = used + 2
     elseif ptype == 2 and srctype == 0 then -- INDOOR UNIT FEATURES

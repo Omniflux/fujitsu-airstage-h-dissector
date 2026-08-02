@@ -10,5 +10,6 @@
 | 1685034938 | Controller temperature 0 degrees C |
 | 1741424959 | System initialisation with zone controller |
 | 1741430635 | Zone controller programming flow |
-| 1741433307 | Zone interations from controller |
-| 1756220383 | Indor unit without features support |
+| 1741433307 | Zone interactions from controller |
+| 1756220383 | Indoor unit without features support |
+| 1785389677 | Zone branch box reporting error J5.7 |
