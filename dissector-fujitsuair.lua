@@ -257,6 +257,9 @@ p_fujitsuair.fields = {
 }
 
 local frame_number = Field.new("frame.number")
+local ip_src       = Field.new("ip.src")
+local ipv6_src     = Field.new("ipv6.src")
+local udp_srcport  = Field.new("udp.srcport")
 local tzsp_encap_f = Field.new("tzsp.encap")
 local data_f       = Field.new("data.data")
 
@@ -279,32 +282,41 @@ function p_fujitsuair.dissector(buf, pinfo, tree)
     local ptype   = bit.rshift(bit.band(buf(2,1):uint(), 0x70), 4)
 
     -- Display information
+    local packet_type_name = packettype[ptype] or "UNKNOWN"
+    local src_type_name = addrtype[srctype] or "UNKNOWN"
+    local dst_type_name = addrtype[dsttype] or "UNKNOWN"
+
     pinfo.cols.protocol = p_fujitsuair.name
-    pinfo.cols.info = string.format("%s [%s %u → %s %u]", packettype[ptype], addrtype[srctype], srcaddr, addrtype[dsttype], dstaddr)
+    pinfo.cols.info = string.format("%s [%s %u → %s %u]", packet_type_name, src_type_name, srcaddr, dst_type_name, dstaddr)
     local subtree = tree:add(p_fujitsuair, buf(), p_fujitsuair.description)
     subtree:append_text(string.format(", Src: %s %u, Dst: %s %u", addrtype[srctype], srcaddr, addrtype[dsttype], dstaddr))
 
     -- Track duplicates
     do
         local frame_no = frame_number().value
+        local ip_src_f = ip_src() or ipv6_src()
+        local udp_srcport_f = udp_srcport()
+        local src_ip = ip_src_f and tostring(ip_src_f.value) or "unknown"
+        local src_port = udp_srcport_f and udp_srcport_f.value or 0
         local srcdst = buf(0,2):uint()
+        local tracking_key = string.format("%s:%u:%u", src_ip, src_port, srcdst)
         local data = buf(2):uint64()
 
         local i = 0
-        if not track_unique[srcdst] then
-            track_unique[srcdst] = {}
-            track_unique_list[srcdst] = {}
+        if not track_unique[tracking_key] then
+            track_unique[tracking_key] = {}
+            track_unique_list[tracking_key] = {}
         end
-        for _, f in ipairs(track_unique_list[srcdst]) do
+        for _, f in ipairs(track_unique_list[tracking_key]) do
             if (f >= frame_no) then break end
             i = f
         end
-        if (track_unique[srcdst][i] == data) then
+        if (track_unique[tracking_key][i] == data) then
             subtree:add(f_duplicate, true):set_generated()
             subtree:add(f_dup_frame, i):set_generated()
-        elseif (track_unique[srcdst][frame_no] == nil) then
-            track_unique[srcdst][frame_no] = data
-            track_unique_list[srcdst][#track_unique_list[srcdst] + 1] = frame_no
+        elseif (track_unique[tracking_key][frame_no] == nil) then
+            track_unique[tracking_key][frame_no] = data
+            track_unique_list[tracking_key][#track_unique_list[tracking_key] + 1] = frame_no
         end
     end
 
